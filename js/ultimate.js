@@ -8,22 +8,25 @@
 // ============================================================
 const CONFIG = {
     particles: {
-        count: 35,  // Fewer, scattered neon bulbs
+        count: 50,  // More shapes for excitement
         colors: [
             { main: '#00ffff', glow: '#00ffff', name: 'cyan' },
             { main: '#ff00ff', glow: '#ff00ff', name: 'magenta' },
             { main: '#00ff88', glow: '#00ff88', name: 'green' },
             { main: '#ffff00', glow: '#ffff00', name: 'yellow' },
             { main: '#ff6600', glow: '#ff4400', name: 'orange' },
-            { main: '#ff0066', glow: '#ff0066', name: 'pink' }
+            { main: '#ff0066', glow: '#ff0066', name: 'pink' },
+            { main: '#00ffaa', glow: '#00ffaa', name: 'aqua' },
+            { main: '#aa00ff', glow: '#aa00ff', name: 'purple' }
         ],
-        minSize: 10,
-        maxSize: 35,  // Larger floating bulbs
-        speed: 0.2,   // Very slow, ambient floating
-        connectionDistance: 0,  // No connections - pure floating bulbs
-        mouseInfluence: 180,
-        glowIntensity: 1.8,
-        flickerChance: 0.015
+        minSize: 15,
+        maxSize: 50,  // Bigger, bolder shapes
+        speed: 1.2,   // FASTER movement
+        connectionDistance: 250,  // Electric arcs between nearby shapes
+        mouseInfluence: 250,
+        glowIntensity: 2.5,  // More intense glow
+        flickerChance: 0.03,
+        trailLength: 8  // Motion trails
     },
     cursor: {
         size: 20,
@@ -272,7 +275,7 @@ class ParticleSystem {
             particle.update(this.mouse);
             particle.draw(this.ctx);
 
-            // Connect nearby bulbs with neon wire effect
+            // Electric arc connections with buzz effect
             for (let j = index + 1; j < this.particles.length; j++) {
                 const other = this.particles[j];
                 const dx = particle.x - other.x;
@@ -280,47 +283,80 @@ class ParticleSystem {
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
                 if (distance < CONFIG.particles.connectionDistance) {
-                    const opacity = (1 - distance / CONFIG.particles.connectionDistance) * 0.6;
+                    const opacity = (1 - distance / CONFIG.particles.connectionDistance) * 0.7;
+                    const buzzIntensity = 0.7 + Math.random() * 0.3; // Flicker
 
-                    // Create gradient wire between bulbs
-                    const gradient = this.ctx.createLinearGradient(
-                        particle.x, particle.y,
-                        other.x, other.y
-                    );
+                    // Electric arc with jagged path
+                    const segments = 8;
+                    const points = [];
+                    for (let s = 0; s <= segments; s++) {
+                        const t = s / segments;
+                        const baseX = particle.x + (other.x - particle.x) * t;
+                        const baseY = particle.y + (other.y - particle.y) * t;
+                        // Add jagged offset (more in middle, less at ends)
+                        const jitter = Math.sin(t * Math.PI) * 15 * (Math.random() - 0.5);
+                        const perpX = -(other.y - particle.y) / distance;
+                        const perpY = (other.x - particle.x) / distance;
+                        points.push({
+                            x: baseX + perpX * jitter,
+                            y: baseY + perpY * jitter
+                        });
+                    }
 
-                    // Use colors from both connected bulbs
-                    const color1 = particle.mainColor || '#00ffff';
-                    const color2 = other.mainColor || '#ff00ff';
-
-                    gradient.addColorStop(0, color1);
-                    gradient.addColorStop(0.5, `rgba(255, 255, 255, ${opacity})`);
-                    gradient.addColorStop(1, color2);
-
-                    // Outer glow for wire
+                    // Outer glow
                     this.ctx.beginPath();
-                    this.ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.3})`;
-                    this.ctx.lineWidth = 4;
+                    this.ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.2 * buzzIntensity})`;
+                    this.ctx.lineWidth = 8;
                     this.ctx.lineCap = 'round';
-                    this.ctx.moveTo(particle.x, particle.y);
-                    this.ctx.lineTo(other.x, other.y);
+                    this.ctx.lineJoin = 'round';
+                    this.ctx.moveTo(points[0].x, points[0].y);
+                    for (let p = 1; p < points.length; p++) {
+                        this.ctx.lineTo(points[p].x, points[p].y);
+                    }
                     this.ctx.stroke();
 
-                    // Inner wire
+                    // Electric arc color
+                    const color1 = particle.mainColor || '#00ffff';
+                    const color2 = other.mainColor || '#ff00ff';
+                    const gradient = this.ctx.createLinearGradient(
+                        particle.x, particle.y, other.x, other.y
+                    );
+                    gradient.addColorStop(0, color1);
+                    gradient.addColorStop(0.5, '#ffffff');
+                    gradient.addColorStop(1, color2);
+
+                    // Main arc
                     this.ctx.beginPath();
                     this.ctx.strokeStyle = gradient;
-                    this.ctx.lineWidth = 2;
-                    this.ctx.lineCap = 'round';
-                    this.ctx.moveTo(particle.x, particle.y);
-                    this.ctx.lineTo(other.x, other.y);
+                    this.ctx.lineWidth = 3 * buzzIntensity;
+                    this.ctx.moveTo(points[0].x, points[0].y);
+                    for (let p = 1; p < points.length; p++) {
+                        this.ctx.lineTo(points[p].x, points[p].y);
+                    }
                     this.ctx.stroke();
 
                     // Core bright line
                     this.ctx.beginPath();
-                    this.ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.8})`;
-                    this.ctx.lineWidth = 0.5;
-                    this.ctx.moveTo(particle.x, particle.y);
-                    this.ctx.lineTo(other.x, other.y);
+                    this.ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * buzzIntensity})`;
+                    this.ctx.lineWidth = 1;
+                    this.ctx.moveTo(points[0].x, points[0].y);
+                    for (let p = 1; p < points.length; p++) {
+                        this.ctx.lineTo(points[p].x, points[p].y);
+                    }
                     this.ctx.stroke();
+
+                    // Sparks at connection points
+                    if (Math.random() > 0.7) {
+                        const sparkCount = 3;
+                        for (let sp = 0; sp < sparkCount; sp++) {
+                            const sparkX = points[Math.floor(Math.random() * points.length)].x;
+                            const sparkY = points[Math.floor(Math.random() * points.length)].y;
+                            this.ctx.beginPath();
+                            this.ctx.arc(sparkX, sparkY, 2 + Math.random() * 3, 0, Math.PI * 2);
+                            this.ctx.fillStyle = `rgba(255, 255, 255, ${0.8 * buzzIntensity})`;
+                            this.ctx.fill();
+                        }
+                    }
                 }
             }
         });
@@ -358,35 +394,54 @@ class NeonBulb {
         this.rotation = Math.random() * Math.PI * 2;
         this.rotationSpeed = (Math.random() - 0.5) * 0.005;
 
-        // Artistic shape variation
-        this.shapeType = Math.floor(Math.random() * 7); // More variety
-        // 0: circle, 1: ring, 2: star, 3: diamond, 4: lightning, 5: heart, 6: hexagon
+        // VOLTAGE service-inspired shapes
+        this.shapeType = Math.floor(Math.random() * 10);
+        // 0: lightning bolt (VOLTAGE), 1: LED screen, 2: neon tube, 3: stage light,
+        // 4: booth frame, 5: hexagon module, 6: star (VIP), 7: spotlight cone,
+        // 8: sound wave, 9: conference podium
         this.aspectRatio = 0.7 + Math.random() * 0.6;
-        this.ringThickness = 0.2 + Math.random() * 0.3;
+        this.ringThickness = 0.15 + Math.random() * 0.25;
         this.starPoints = 4 + Math.floor(Math.random() * 4);
+
+        // Trail history for motion effect
+        this.trail = [];
+        this.maxTrail = CONFIG.particles.trailLength || 5;
     }
 
     update(mouse) {
-        // Smooth floating movement
+        // Store trail position
+        this.trail.unshift({ x: this.x, y: this.y, size: this.size });
+        if (this.trail.length > this.maxTrail) this.trail.pop();
+
+        // Dynamic movement with acceleration
         this.x += this.speedX;
         this.y += this.speedY;
         this.rotation += this.rotationSpeed;
 
+        // Add slight random drift for organic movement
+        this.speedX += (Math.random() - 0.5) * 0.05;
+        this.speedY += (Math.random() - 0.5) * 0.05;
+
+        // Speed limits
+        const maxSpeed = this.config.speed * 2;
+        this.speedX = Math.max(-maxSpeed, Math.min(maxSpeed, this.speedX));
+        this.speedY = Math.max(-maxSpeed, Math.min(maxSpeed, this.speedY));
+
         // Pulse effect - breathing glow
         this.pulse += this.pulseSpeed;
-        const pulseFactor = 0.15;
+        const pulseFactor = 0.2;
         this.size = this.baseSize * (1 + Math.sin(this.pulse) * pulseFactor);
 
         // Neon flicker effect
         if (Math.random() < this.config.flickerChance) {
-            this.flickerTarget = 0.3 + Math.random() * 0.4;
+            this.flickerTarget = 0.2 + Math.random() * 0.5;
             setTimeout(() => {
                 this.flickerTarget = 1;
-            }, 50 + Math.random() * 100);
+            }, 30 + Math.random() * 80);
         }
-        this.flickerState += (this.flickerTarget - this.flickerState) * 0.3;
+        this.flickerState += (this.flickerTarget - this.flickerState) * 0.4;
 
-        // Mouse interaction - bulbs brighten near cursor
+        // Mouse interaction - shapes attracted & energized
         if (mouse.x !== null && mouse.y !== null) {
             const dx = mouse.x - this.x;
             const dy = mouse.y - this.y;
@@ -394,23 +449,20 @@ class NeonBulb {
 
             if (distance < this.config.mouseInfluence) {
                 const force = (this.config.mouseInfluence - distance) / this.config.mouseInfluence;
-                // Gentle repulsion
-                this.x -= dx * force * 0.015;
-                this.y -= dy * force * 0.015;
-                // Brighten on approach
-                this.size = this.baseSize * (1 + force * 0.5);
+                // Attraction toward cursor
+                this.speedX += dx * force * 0.003;
+                this.speedY += dy * force * 0.003;
+                // Energize on approach
+                this.size = this.baseSize * (1 + force * 0.8);
+                this.flickerState = Math.min(1.5, this.flickerState + force * 0.3);
             }
         }
 
-        // Boundary check with smooth bounce
-        if (this.x < this.size || this.x > this.canvas.width - this.size) {
-            this.speedX *= -0.8;
-            this.x = Math.max(this.size, Math.min(this.canvas.width - this.size, this.x));
-        }
-        if (this.y < this.size || this.y > this.canvas.height - this.size) {
-            this.speedY *= -0.8;
-            this.y = Math.max(this.size, Math.min(this.canvas.height - this.size, this.y));
-        }
+        // Boundary check with bounce
+        if (this.x < this.size) { this.speedX = Math.abs(this.speedX) * 0.9; this.x = this.size; }
+        if (this.x > this.canvas.width - this.size) { this.speedX = -Math.abs(this.speedX) * 0.9; this.x = this.canvas.width - this.size; }
+        if (this.y < this.size) { this.speedY = Math.abs(this.speedY) * 0.9; this.y = this.size; }
+        if (this.y > this.canvas.height - this.size) { this.speedY = -Math.abs(this.speedY) * 0.9; this.y = this.canvas.height - this.size; }
     }
 
     hexToRgb(hex) {
@@ -427,16 +479,19 @@ class NeonBulb {
         const glowRgb = this.hexToRgb(this.glowColor);
         const intensity = this.flickerState * this.config.glowIntensity;
 
+        // Draw motion trail first
+        this.drawTrail(ctx, glowRgb);
+
         ctx.save();
         ctx.translate(this.x, this.y);
         ctx.rotate(this.rotation);
 
         // === OUTER GLOW (Dramatic neon atmosphere) ===
-        const outerGlowSize = this.size * 5;
+        const outerGlowSize = this.size * 6;
         const outerGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, outerGlowSize);
-        outerGradient.addColorStop(0, `rgba(${glowRgb.r}, ${glowRgb.g}, ${glowRgb.b}, ${0.5 * intensity})`);
-        outerGradient.addColorStop(0.2, `rgba(${glowRgb.r}, ${glowRgb.g}, ${glowRgb.b}, ${0.25 * intensity})`);
-        outerGradient.addColorStop(0.5, `rgba(${glowRgb.r}, ${glowRgb.g}, ${glowRgb.b}, ${0.1 * intensity})`);
+        outerGradient.addColorStop(0, `rgba(${glowRgb.r}, ${glowRgb.g}, ${glowRgb.b}, ${0.6 * intensity})`);
+        outerGradient.addColorStop(0.15, `rgba(${glowRgb.r}, ${glowRgb.g}, ${glowRgb.b}, ${0.35 * intensity})`);
+        outerGradient.addColorStop(0.4, `rgba(${glowRgb.r}, ${glowRgb.g}, ${glowRgb.b}, ${0.12 * intensity})`);
         outerGradient.addColorStop(1, 'transparent');
 
         ctx.fillStyle = outerGradient;
@@ -450,84 +505,272 @@ class NeonBulb {
         ctx.restore();
     }
 
+    drawTrail(ctx, rgb) {
+        // Draw fading trail
+        for (let i = this.trail.length - 1; i >= 0; i--) {
+            const t = this.trail[i];
+            const alpha = (1 - i / this.trail.length) * 0.4;
+            const trailSize = t.size * (1 - i / this.trail.length) * 0.8;
+
+            ctx.beginPath();
+            ctx.fillStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
+            ctx.arc(t.x, t.y, trailSize, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
     drawShape(ctx, rgb, intensity) {
         const s = this.size;
 
         // Inner glow for all shapes
         ctx.shadowColor = this.mainColor;
-        ctx.shadowBlur = s * 2;
+        ctx.shadowBlur = s * 3;
 
         switch (this.shapeType) {
-            case 0: // Glowing Circle
-                this.drawNeonCircle(ctx, rgb, intensity, s);
+            case 0: // Lightning Bolt (VOLTAGE signature)
+                this.drawLightningBolt(ctx, rgb, intensity, s);
                 break;
-            case 1: // Neon Ring
-                this.drawNeonRing(ctx, rgb, intensity, s);
+            case 1: // LED Screen
+                this.drawLEDScreen(ctx, rgb, intensity, s);
                 break;
-            case 2: // Neon Star
-                this.drawNeonStar(ctx, rgb, intensity, s);
+            case 2: // Neon Tube
+                this.drawNeonTube(ctx, rgb, intensity, s);
                 break;
-            case 3: // Neon Diamond
-                this.drawNeonDiamond(ctx, rgb, intensity, s);
+            case 3: // Stage Light
+                this.drawStageLight(ctx, rgb, intensity, s);
                 break;
-            case 4: // Lightning Bolt
-                this.drawNeonBolt(ctx, rgb, intensity, s);
+            case 4: // Booth Frame
+                this.drawBoothFrame(ctx, rgb, intensity, s);
                 break;
-            case 5: // Neon Heart
-                this.drawNeonHeart(ctx, rgb, intensity, s);
+            case 5: // Hexagon Module
+                this.drawHexModule(ctx, rgb, intensity, s);
                 break;
-            case 6: // Neon Hexagon
-                this.drawNeonHexagon(ctx, rgb, intensity, s);
+            case 6: // VIP Star
+                this.drawVIPStar(ctx, rgb, intensity, s);
+                break;
+            case 7: // Spotlight Cone
+                this.drawSpotlight(ctx, rgb, intensity, s);
+                break;
+            case 8: // Sound Wave
+                this.drawSoundWave(ctx, rgb, intensity, s);
+                break;
+            case 9: // Conference Podium
+                this.drawPodium(ctx, rgb, intensity, s);
                 break;
             default:
-                this.drawNeonCircle(ctx, rgb, intensity, s);
+                this.drawLightningBolt(ctx, rgb, intensity, s);
         }
 
         ctx.shadowBlur = 0;
     }
 
-    drawNeonCircle(ctx, rgb, intensity, s) {
-        // Outer ring glow
-        ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.8 * intensity})`;
-        ctx.lineWidth = s * 0.15;
+    // VOLTAGE Signature Lightning Bolt
+    drawLightningBolt(ctx, rgb, intensity, s) {
         ctx.beginPath();
-        ctx.arc(0, 0, s * 0.8, 0, Math.PI * 2);
+        ctx.moveTo(0, -s);
+        ctx.lineTo(s * 0.4, -s * 0.3);
+        ctx.lineTo(s * 0.15, -s * 0.3);
+        ctx.lineTo(s * 0.5, s * 0.3);
+        ctx.lineTo(s * 0.1, s * 0.3);
+        ctx.lineTo(s * 0.3, s);
+        ctx.lineTo(-s * 0.2, s * 0.1);
+        ctx.lineTo(0, s * 0.1);
+        ctx.lineTo(-s * 0.4, -s * 0.4);
+        ctx.lineTo(-s * 0.1, -s * 0.4);
+        ctx.closePath();
+
+        const boltGrad = ctx.createLinearGradient(0, -s, 0, s);
+        boltGrad.addColorStop(0, `rgba(255, 255, 255, ${intensity})`);
+        boltGrad.addColorStop(0.3, this.mainColor);
+        boltGrad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.7 * intensity})`);
+        ctx.fillStyle = boltGrad;
+        ctx.fill();
+
+        ctx.strokeStyle = `rgba(255, 255, 255, ${intensity})`;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+    }
+
+    // LED Screen Rectangle
+    drawLEDScreen(ctx, rgb, intensity, s) {
+        const w = s * 1.6;
+        const h = s * 0.9;
+
+        // Screen body
+        ctx.fillStyle = `rgba(10, 10, 20, ${0.8 * intensity})`;
+        ctx.fillRect(-w/2, -h/2, w, h);
+
+        // LED pixels pattern
+        const pixelSize = 3;
+        for (let x = -w/2 + 4; x < w/2 - 4; x += pixelSize + 2) {
+            for (let y = -h/2 + 4; y < h/2 - 4; y += pixelSize + 2) {
+                const brightness = 0.3 + Math.random() * 0.7;
+                ctx.fillStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${brightness * intensity})`;
+                ctx.fillRect(x, y, pixelSize, pixelSize);
+            }
+        }
+
+        // Glowing border
+        ctx.strokeStyle = this.mainColor;
+        ctx.lineWidth = 3;
+        ctx.strokeRect(-w/2, -h/2, w, h);
+
+        // Corner accents
+        const corner = 8;
+        ctx.strokeStyle = `rgba(255, 255, 255, ${intensity})`;
+        ctx.lineWidth = 2;
+        // Top left
+        ctx.beginPath();
+        ctx.moveTo(-w/2, -h/2 + corner);
+        ctx.lineTo(-w/2, -h/2);
+        ctx.lineTo(-w/2 + corner, -h/2);
+        ctx.stroke();
+        // Top right
+        ctx.beginPath();
+        ctx.moveTo(w/2 - corner, -h/2);
+        ctx.lineTo(w/2, -h/2);
+        ctx.lineTo(w/2, -h/2 + corner);
+        ctx.stroke();
+    }
+
+    // Neon Tube (horizontal or vertical)
+    drawNeonTube(ctx, rgb, intensity, s) {
+        const length = s * 2;
+        const thickness = s * 0.25;
+
+        // Tube glow
+        const tubeGrad = ctx.createLinearGradient(-length/2, 0, length/2, 0);
+        tubeGrad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.3 * intensity})`);
+        tubeGrad.addColorStop(0.2, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${intensity})`);
+        tubeGrad.addColorStop(0.8, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${intensity})`);
+        tubeGrad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.3 * intensity})`);
+
+        ctx.fillStyle = tubeGrad;
+        ctx.beginPath();
+        ctx.roundRect(-length/2, -thickness/2, length, thickness, thickness/2);
+        ctx.fill();
+
+        // Inner bright line
+        ctx.strokeStyle = `rgba(255, 255, 255, ${0.8 * intensity})`;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(-length/2 + thickness, 0);
+        ctx.lineTo(length/2 - thickness, 0);
         ctx.stroke();
 
-        // Inner bright core
-        const coreGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, s * 0.5);
-        coreGrad.addColorStop(0, `rgba(255, 255, 255, ${intensity})`);
-        coreGrad.addColorStop(0.5, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.8 * intensity})`);
-        coreGrad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.2 * intensity})`);
-        ctx.fillStyle = coreGrad;
+        // End caps
+        ctx.fillStyle = `rgba(150, 150, 150, ${0.5 * intensity})`;
         ctx.beginPath();
-        ctx.arc(0, 0, s * 0.5, 0, Math.PI * 2);
+        ctx.arc(-length/2 + thickness/2, 0, thickness/2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(length/2 - thickness/2, 0, thickness/2, 0, Math.PI * 2);
         ctx.fill();
     }
 
-    drawNeonRing(ctx, rgb, intensity, s) {
-        const thickness = s * this.ringThickness;
-
-        // Outer edge
-        ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.9 * intensity})`;
-        ctx.lineWidth = thickness;
-        ctx.lineCap = 'round';
+    // Stage Light / Spotlight
+    drawStageLight(ctx, rgb, intensity, s) {
+        // Light housing
+        ctx.fillStyle = `rgba(40, 40, 50, ${0.9 * intensity})`;
         ctx.beginPath();
-        ctx.arc(0, 0, s, 0, Math.PI * 2);
-        ctx.stroke();
+        ctx.arc(0, -s * 0.5, s * 0.4, 0, Math.PI * 2);
+        ctx.fill();
 
-        // Inner bright line
-        ctx.strokeStyle = `rgba(255, 255, 255, ${0.7 * intensity})`;
-        ctx.lineWidth = thickness * 0.3;
+        // Light cone
         ctx.beginPath();
-        ctx.arc(0, 0, s, 0, Math.PI * 2);
-        ctx.stroke();
+        ctx.moveTo(-s * 0.3, -s * 0.3);
+        ctx.lineTo(-s * 0.8, s);
+        ctx.lineTo(s * 0.8, s);
+        ctx.lineTo(s * 0.3, -s * 0.3);
+        ctx.closePath();
+
+        const coneGrad = ctx.createLinearGradient(0, -s * 0.3, 0, s);
+        coneGrad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.9 * intensity})`);
+        coneGrad.addColorStop(0.5, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.4 * intensity})`);
+        coneGrad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.05 * intensity})`);
+        ctx.fillStyle = coneGrad;
+        ctx.fill();
+
+        // Bright center
+        ctx.beginPath();
+        ctx.arc(0, -s * 0.5, s * 0.2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${intensity})`;
+        ctx.fill();
     }
 
-    drawNeonStar(ctx, rgb, intensity, s) {
-        const points = this.starPoints;
+    // Booth Frame
+    drawBoothFrame(ctx, rgb, intensity, s) {
+        const w = s * 1.2;
+        const h = s * 1.4;
+
+        // 3D booth frame
+        ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${intensity})`;
+        ctx.lineWidth = 3;
+
+        // Front frame
+        ctx.strokeRect(-w/2, -h/2, w, h);
+
+        // 3D depth lines
+        const depth = s * 0.3;
+        ctx.beginPath();
+        ctx.moveTo(-w/2, -h/2);
+        ctx.lineTo(-w/2 - depth, -h/2 - depth);
+        ctx.moveTo(w/2, -h/2);
+        ctx.lineTo(w/2 + depth, -h/2 - depth);
+        ctx.moveTo(-w/2, h/2);
+        ctx.lineTo(-w/2 - depth, h/2 - depth);
+        ctx.moveTo(w/2, h/2);
+        ctx.lineTo(w/2 + depth, h/2 - depth);
+        ctx.stroke();
+
+        // Inner glow panel
+        ctx.fillStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.15 * intensity})`;
+        ctx.fillRect(-w/2 + 5, -h/2 + 5, w - 10, h - 10);
+    }
+
+    // Hexagon Module (modular booth design)
+    drawHexModule(ctx, rgb, intensity, s) {
+        // Draw hexagon
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+            const angle = (i * Math.PI) / 3 - Math.PI / 2;
+            const x = Math.cos(angle) * s;
+            const y = Math.sin(angle) * s;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+
+        // Fill with gradient
+        const hexGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, s);
+        hexGrad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.3 * intensity})`);
+        hexGrad.addColorStop(0.7, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.1 * intensity})`);
+        hexGrad.addColorStop(1, 'transparent');
+        ctx.fillStyle = hexGrad;
+        ctx.fill();
+
+        // Neon outline
+        ctx.strokeStyle = this.mainColor;
+        ctx.lineWidth = 4;
+        ctx.stroke();
+
+        // Inner line
+        ctx.strokeStyle = `rgba(255, 255, 255, ${0.7 * intensity})`;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // Center dot
+        ctx.beginPath();
+        ctx.arc(0, 0, s * 0.15, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${intensity})`;
+        ctx.fill();
+    }
+
+    // VIP Star
+    drawVIPStar(ctx, rgb, intensity, s) {
+        const points = 5;
         const outerR = s;
-        const innerR = s * 0.4;
+        const innerR = s * 0.38;
 
         ctx.beginPath();
         for (let i = 0; i < points * 2; i++) {
@@ -540,101 +783,105 @@ class NeonBulb {
         }
         ctx.closePath();
 
-        // Fill with gradient
+        // Premium gold-ish gradient
         const starGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, s);
         starGrad.addColorStop(0, `rgba(255, 255, 255, ${intensity})`);
-        starGrad.addColorStop(0.3, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.9 * intensity})`);
-        starGrad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.4 * intensity})`);
+        starGrad.addColorStop(0.2, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${intensity})`);
+        starGrad.addColorStop(1, `rgba(${rgb.r * 0.7}, ${rgb.g * 0.7}, ${rgb.b * 0.7}, ${0.8 * intensity})`);
         ctx.fillStyle = starGrad;
         ctx.fill();
 
-        // Outline
-        ctx.strokeStyle = `rgba(255, 255, 255, ${0.8 * intensity})`;
+        ctx.strokeStyle = `rgba(255, 255, 255, ${intensity})`;
         ctx.lineWidth = 2;
         ctx.stroke();
     }
 
-    drawNeonDiamond(ctx, rgb, intensity, s) {
+    // Spotlight Cone
+    drawSpotlight(ctx, rgb, intensity, s) {
         ctx.beginPath();
         ctx.moveTo(0, -s);
-        ctx.lineTo(s * 0.6, 0);
-        ctx.lineTo(0, s);
-        ctx.lineTo(-s * 0.6, 0);
+        ctx.lineTo(-s * 0.8, s);
+        ctx.lineTo(s * 0.8, s);
         ctx.closePath();
 
-        const diamondGrad = ctx.createLinearGradient(0, -s, 0, s);
-        diamondGrad.addColorStop(0, `rgba(255, 255, 255, ${intensity})`);
-        diamondGrad.addColorStop(0.5, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.8 * intensity})`);
-        diamondGrad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.5 * intensity})`);
-        ctx.fillStyle = diamondGrad;
+        const spotGrad = ctx.createLinearGradient(0, -s, 0, s);
+        spotGrad.addColorStop(0, `rgba(255, 255, 255, ${intensity})`);
+        spotGrad.addColorStop(0.3, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.8 * intensity})`);
+        spotGrad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.1 * intensity})`);
+        ctx.fillStyle = spotGrad;
         ctx.fill();
 
-        ctx.strokeStyle = `rgba(255, 255, 255, ${0.9 * intensity})`;
-        ctx.lineWidth = 2;
-        ctx.stroke();
-    }
-
-    drawNeonBolt(ctx, rgb, intensity, s) {
+        // Top circle
         ctx.beginPath();
-        ctx.moveTo(-s * 0.2, -s);
-        ctx.lineTo(s * 0.3, -s);
-        ctx.lineTo(s * 0.1, -s * 0.1);
-        ctx.lineTo(s * 0.5, -s * 0.1);
-        ctx.lineTo(-s * 0.2, s);
-        ctx.lineTo(0, s * 0.1);
-        ctx.lineTo(-s * 0.4, s * 0.1);
-        ctx.closePath();
-
-        const boltGrad = ctx.createLinearGradient(-s * 0.4, -s, s * 0.5, s);
-        boltGrad.addColorStop(0, `rgba(255, 255, 255, ${intensity})`);
-        boltGrad.addColorStop(0.5, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${intensity})`);
-        boltGrad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.6 * intensity})`);
-        ctx.fillStyle = boltGrad;
+        ctx.arc(0, -s, s * 0.2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${intensity})`;
         ctx.fill();
-
-        ctx.strokeStyle = `rgba(255, 255, 255, ${0.8 * intensity})`;
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
     }
 
-    drawNeonHeart(ctx, rgb, intensity, s) {
-        ctx.beginPath();
-        ctx.moveTo(0, s * 0.3);
-        ctx.bezierCurveTo(-s, -s * 0.3, -s, -s * 0.8, 0, -s * 0.4);
-        ctx.bezierCurveTo(s, -s * 0.8, s, -s * 0.3, 0, s * 0.3);
-        ctx.closePath();
+    // Sound Wave
+    drawSoundWave(ctx, rgb, intensity, s) {
+        ctx.strokeStyle = this.mainColor;
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
 
-        const heartGrad = ctx.createRadialGradient(0, -s * 0.2, 0, 0, 0, s);
-        heartGrad.addColorStop(0, `rgba(255, 255, 255, ${intensity})`);
-        heartGrad.addColorStop(0.4, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.9 * intensity})`);
-        heartGrad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.5 * intensity})`);
-        ctx.fillStyle = heartGrad;
-        ctx.fill();
-
-        ctx.strokeStyle = `rgba(255, 255, 255, ${0.7 * intensity})`;
-        ctx.lineWidth = 2;
-        ctx.stroke();
-    }
-
-    drawNeonHexagon(ctx, rgb, intensity, s) {
-        ctx.beginPath();
-        for (let i = 0; i < 6; i++) {
-            const angle = (i * Math.PI) / 3 - Math.PI / 2;
-            const x = Math.cos(angle) * s;
-            const y = Math.sin(angle) * s;
-            if (i === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
+        // Draw 3 wave arcs
+        for (let i = 1; i <= 3; i++) {
+            const radius = s * 0.3 * i;
+            const alpha = (1 - i * 0.25) * intensity;
+            ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, -Math.PI * 0.4, Math.PI * 0.4);
+            ctx.stroke();
         }
+
+        // Speaker center
+        ctx.beginPath();
+        ctx.arc(0, 0, s * 0.15, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${intensity})`;
+        ctx.fill();
+    }
+
+    // Conference Podium
+    drawPodium(ctx, rgb, intensity, s) {
+        // Podium base
+        ctx.beginPath();
+        ctx.moveTo(-s * 0.6, -s * 0.3);
+        ctx.lineTo(-s * 0.8, s);
+        ctx.lineTo(s * 0.8, s);
+        ctx.lineTo(s * 0.6, -s * 0.3);
         ctx.closePath();
 
-        // Stroke only for hollow neon effect
-        ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.9 * intensity})`;
-        ctx.lineWidth = s * 0.12;
+        const podGrad = ctx.createLinearGradient(0, -s * 0.3, 0, s);
+        podGrad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.6 * intensity})`);
+        podGrad.addColorStop(1, `rgba(${rgb.r * 0.5}, ${rgb.g * 0.5}, ${rgb.b * 0.5}, ${0.4 * intensity})`);
+        ctx.fillStyle = podGrad;
+        ctx.fill();
+
+        ctx.strokeStyle = this.mainColor;
+        ctx.lineWidth = 2;
         ctx.stroke();
 
-        // Inner bright line
-        ctx.strokeStyle = `rgba(255, 255, 255, ${0.6 * intensity})`;
-        ctx.lineWidth = s * 0.04;
+        // Top surface
+        ctx.beginPath();
+        ctx.moveTo(-s * 0.6, -s * 0.3);
+        ctx.lineTo(-s * 0.4, -s * 0.6);
+        ctx.lineTo(s * 0.4, -s * 0.6);
+        ctx.lineTo(s * 0.6, -s * 0.3);
+        ctx.closePath();
+        ctx.fillStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.8 * intensity})`;
+        ctx.fill();
+        ctx.stroke();
+
+        // Mic indicator
+        ctx.beginPath();
+        ctx.arc(0, -s * 0.8, s * 0.1, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${intensity})`;
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(0, -s * 0.7);
+        ctx.lineTo(0, -s * 0.5);
+        ctx.strokeStyle = `rgba(255, 255, 255, ${0.8 * intensity})`;
+        ctx.lineWidth = 2;
         ctx.stroke();
     }
 }
