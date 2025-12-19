@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0a0f">
+    <title>VOLTAGE ULTIMATE | The Art of Exhibition Excellence</title>
+    <meta name="description" content="VOLTAGE - Saudi Arabia's Premier Exhibition & Neon Specialists. Where creativity meets craftsmanship.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- GSAP & ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- Lottie -->
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+    <link rel="stylesheet" href="css/ultimate.css">
+</head>
+<body>
+    <!-- Preloader -->
+    <div class="preloader" id="preloader">
+        <div class="preloader-inner">
+            <div class="voltage-logo-loader">
+                <svg viewBox="0 0 100 100" class="logo-svg">
+                    <defs>
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                        <linearGradient id="neonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#00FFFF"/>
+                            <stop offset="50%" style="stop-color:#FF00FF"/>
+                            <stop offset="100%" style="stop-color:#00FFFF"/>
+                        </linearGradient>
+                    </defs>
+                    <polygon class="hex-outline" points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5"
+                             fill="none" stroke="url(#neonGrad)" stroke-width="2" filter="url(#glow)"/>
+                    <path class="bolt" d="M40,25 L60,25 L50,45 L65,45 L35,80 L45,50 L30,50 Z"
+                          fill="url(#neonGrad)" filter="url(#glow)"/>
+                </svg>
+            </div>
+            <div class="loader-text">
+                <span>V</span><span>O</span><span>L</span><span>T</span><span>A</span><span>G</span><span>E</span>
+            </div>
+            <div class="loader-bar">
+                <div class="loader-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cursor Effects -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
+    <div class="cursor-trail"></div>
+
+    <!-- Background Layers -->
+    <div class="bg-layers">
+        <canvas id="particleCanvas"></canvas>
+        <div class="wood-grain-overlay"></div>
+        <div class="booth-grid"></div>
+        <div class="scanlines"></div>
+        <div class="vignette"></div>
+    </div>
+
+    <!-- Floating Neon Elements -->
+    <div class="floating-neons">
+        <div class="neon-circle n1"></div>
+        <div class="neon-circle n2"></div>
+        <div class="neon-circle n3"></div>
+        <div class="neon-line nl1"></div>
+        <div class="neon-line nl2"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 50 50" width="45" height="45">
+                        <polygon points="25,2 48,14 48,36 25,48 2,36 2,14" fill="none" stroke="#00FFFF" stroke-width="1.5"/>
+                        <path d="M20,12 L30,12 L25,22 L33,22 L17,40 L22,25 L14,25 Z" fill="#FF00FF"/>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <span class="en">VOLTAGE</span>
+                    <span class="ar">فولتج</span>
+                </div>
+            </a>
+
+            <ul class="nav-menu">
+                <li><a href="#about" class="nav-link"><span class="link-text">من نحن</span><span class="link-line"></span></a></li>
+                <li><a href="#services" class="nav-link"><span class="link-text">خدماتنا</span><span class="link-line"></span></a></li>
+                <li><a href="#portfolio" class="nav-link"><span class="link-text">أعمالنا</span><span class="link-line"></span></a></li>
+                <li><a href="#process" class="nav-link"><span class="link-text">آلية العمل</span><span class="link-line"></span></a></li>
+                <li><a href="#contact" class="nav-link"><span class="link-text">تواصل</span><span class="link-line"></span></a></li>
+            </ul>
+
+            <a href="#contact" class="nav-cta">
+                <span>ابدأ مشروعك</span>
+                <div class="cta-glow"></div>
+            </a>
+
+            <button class="mobile-toggle" id="mobileToggle">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="badge-icon">⚡</span>
+                <span>صناعة التجارب المُلهمة منذ 2015</span>
+            </div>
+
+            <h1 class="hero-title">
+                <span class="title-line">حيث تتحول</span>
+                <span class="title-line gradient-text">الأفكار</span>
+                <span class="title-line">إلى تجارب</span>
+                <span class="title-line neon-text">مبهرة</span>
+            </h1>
+
+            <p class="hero-subtitle">
+                نصنع عوالم تُبهر الحواس وتبقى في الذاكرة. معارض مميزة، فعاليات واسعة،
+                بوثات مبتكرة وإضاءات نيون خلّابة — نمنح علامتك التجارية تجربة استثنائية.
+            </p>
+
+            <div class="hero-cta-group">
+                <a href="#contact" class="btn btn-primary">
+                    <span>ابدأ مشروعك</span>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+                <a href="#portfolio" class="btn btn-secondary">
+                    <span>شاهد أعمالنا</span>
+                </a>
+            </div>
+
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number" data-count="500">0</span>
+                    <span class="stat-label">مشروع منجز</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-number" data-count="150">0</span>
+                    <span class="stat-label">عميل سعيد</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-number" data-count="10">0</span>
+                    <span class="stat-label">سنوات خبرة</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="booth-3d">
+                <div class="booth-panel front"></div>
+                <div class="booth-panel left"></div>
+                <div class="booth-panel right"></div>
+                <div class="booth-panel top"></div>
+                <div class="booth-lights">
+                    <div class="spotlight s1"></div>
+                    <div class="spotlight s2"></div>
+                    <div class="spotlight s3"></div>
+                </div>
+            </div>
+            <div class="neon-frame">
+                <div class="frame-corner tl"></div>
+                <div class="frame-corner tr"></div>
+                <div class="frame-corner bl"></div>
+                <div class="frame-corner br"></div>
+            </div>
+        </div>
+
+        <div class="scroll-indicator">
+            <div class="mouse">
+                <div class="wheel"></div>
+            </div>
+            <span>اكتشف المزيد</span>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">من نحن</span>
+                <h2 class="section-title">
+                    <span class="wood-text">إبداع</span> يُصنع بـ<span class="neon-text">شغف</span>
+                </h2>
+            </div>
+
+            <div class="about-grid">
+                <div class="about-content">
+                    <div class="about-card glass-card">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 60 60" width="60" height="60">
+                                <rect x="10" y="20" width="40" height="30" fill="none" stroke="#00FFFF" stroke-width="2"/>
+                                <polygon points="30,5 50,20 10,20" fill="none" stroke="#FF00FF" stroke-width="2"/>
+                                <rect x="20" y="35" width="8" height="15" fill="#FFD700"/>
+                                <rect x="32" y="30" width="10" height="8" fill="none" stroke="#00FFFF"/>
+                            </svg>
+                        </div>
+                        <h3>حكايتنا</h3>
+                        <p>فولتج هي إحدى أبرز الشركات السعودية المتخصصة في تنظيم المعارض والمؤتمرات وبناء بيئات تفاعلية متكاملة. عملنا مع الجهات الحكومية، والشركات الكبرى، والعلامات التجارية العالمية.</p>
+                    </div>
+
+                    <div class="about-card glass-card">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 60 60" width="60" height="60">
+                                <circle cx="30" cy="30" r="25" fill="none" stroke="#FF00FF" stroke-width="2"/>
+                                <path d="M30,10 L30,30 L45,30" fill="none" stroke="#00FFFF" stroke-width="3"/>
+                                <circle cx="30" cy="30" r="4" fill="#FFD700"/>
+                            </svg>
+                        </div>
+                        <h3>رسالتنا</h3>
+                        <p>أن نكون الشريك الذي تعتمد عليه العلامات التجارية لصناعة فعاليات ملهمة، راقية، ومنفّذة بأعلى جودة — متناغمين مع رؤية السعودية 2030.</p>
+                    </div>
+                </div>
+
+                <div class="about-features">
+                    <div class="feature-item">
+                        <div class="feature-icon wood-accent">
+                            <span>🎯</span>
+                        </div>
+                        <div class="feature-content">
+                            <h4>تنفيذ متكامل</h4>
+                            <p>من الفكرة إلى أدق تفاصيل الإخراج</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon neon-accent">
+                            <span>🏭</span>
+                        </div>
+                        <div class="feature-content">
+                            <h4>ورش مجهّزة</h4>
+                            <p>CNC، نجارة، لحام، وتشطيب</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon wood-accent">
+                            <span>👥</span>
+                        </div>
+                        <div class="feature-content">
+                            <h4>فريق محترف</h4>
+                            <p>مهندسون ومصممون بمهارات عالية</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon neon-accent">
+                            <span>💡</span>
+                        </div>
+                        <div class="feature-content">
+                            <h4>تقنيات حديثة</h4>
+                            <p>أنظمة صوت وضوء و LED متقدمة</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-header center">
+                <span class="section-tag">خدماتنا</span>
+                <h2 class="section-title">حلول <span class="gradient-text">شاملة</span> للمعارض والفعاليات</h2>
+            </div>
+
+            <div class="services-grid">
+                <div class="service-card" data-service="booths">
+                    <div class="card-bg"></div>
+                    <div class="card-content">
+                        <div class="service-icon">
+                            <div class="icon-box">
+                                <svg viewBox="0 0 80 80" width="50" height="50">
+                                    <rect x="15" y="30" width="50" height="40" fill="none" stroke="#00FFFF" stroke-width="2"/>
+                                    <polygon points="40,10 70,30 10,30" fill="none" stroke="#FF00FF" stroke-width="2"/>
+                                    <rect x="30" y="45" width="20" height="25" fill="rgba(255,215,0,0.3)" stroke="#FFD700"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <h3>تصميم وتنفيذ البوثات</h3>
+                        <p>بوثات فاخرة تجمع بين العمارة الحديثة والهوية البصرية وتجارب الزوار — مع تشطيبات دقيقة وإضاءة تبرز قوة العلامة.</p>
+                        <div class="card-tags">
+                            <span>تصميم ثلاثي الأبعاد</span>
+                            <span>تنفيذ احترافي</span>
+                            <span>تشطيبات فاخرة</span>
+                        </div>
+                    </div>
+                    <div class="card-glow"></div>
+                </div>
+
+                <div class="service-card" data-service="events">
+                    <div class="card-bg"></div>
+                    <div class="card-content">
+                        <div class="service-icon">
+                            <div class="icon-box">
+                                <svg viewBox="0 0 80 80" width="50" height="50">
+                                    <circle cx="40" cy="40" r="30" fill="none" stroke="#FF00FF" stroke-width="2"/>
+                                    <circle cx="40" cy="40" r="20" fill="none" stroke="#00FFFF" stroke-width="1"/>
+                                    <circle cx="40" cy="40" r="10" fill="rgba(255,0,255,0.3)"/>
+                                    <path d="M40,10 L40,20 M70,40 L60,40 M40,70 L40,60 M10,40 L20,40" stroke="#FFD700" stroke-width="2"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <h3>إدارة الفعاليات</h3>
+                        <p>تنظيم فعاليات حكومية وشركات، حفلات إطلاق، مؤتمرات، وملتقيات تُدار من أول فكرة حتى اللحظة الأخيرة.</p>
+                        <div class="card-tags">
+                            <span>تخطيط شامل</span>
+                            <span>إدارة يوم الفعالية</span>
+                            <span>تنسيق كامل</span>
+                        </div>
+                    </div>
+                    <div class="card-glow"></div>
+                </div>
+
+                <div class="service-card" data-service="conferences">
+                    <div class="card-bg"></div>
+                    <div class="card-content">
+                        <div class="service-icon">
+                            <div class="icon-box">
+                                <svg viewBox="0 0 80 80" width="50" height="50">
+                                    <rect x="10" y="25" width="60" height="35" fill="none" stroke="#00FFFF" stroke-width="2"/>
+                                    <rect x="20" y="32" width="40" height="20" fill="rgba(0,255,255,0.2)"/>
+                                    <rect x="25" y="60" width="30" height="10" fill="none" stroke="#FF00FF" stroke-width="1"/>
+                                    <circle cx="40" cy="15" r="8" fill="none" stroke="#FFD700" stroke-width="2"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <h3>إنتاج المؤتمرات</h3>
+                        <p>منصّات عرض، شاشات LED، هندسة صوت وإضاءة، مقاعد، مسارات دخول، وفريق تشغيل متمرس.</p>
+                        <div class="card-tags">
+                            <span>شاشات عملاقة</span>
+                            <span>صوت احترافي</span>
+                            <span>إضاءة مسرحية</span>
+                        </div>
+                    </div>
+                    <div class="card-glow"></div>
+                </div>
+
+                <div class="service-card featured" data-service="neon">
+                    <div class="card-bg"></div>
+                    <div class="card-content">
+                        <div class="service-icon">
+                            <div class="icon-box neon-special">
+                                <svg viewBox="0 0 80 80" width="50" height="50">
+                                    <path d="M20,60 Q20,20 40,20 Q60,20 60,60" fill="none" stroke="#00FFFF" stroke-width="3" class="neon-path"/>
+                                    <path d="M30,60 Q30,30 40,30 Q50,30 50,60" fill="none" stroke="#FF00FF" stroke-width="2"/>
+                                    <line x1="20" y1="60" x2="20" y2="70" stroke="#FFD700" stroke-width="2"/>
+                                    <line x1="60" y1="60" x2="60" y2="70" stroke="#FFD700" stroke-width="2"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <h3>حلول الإضاءة — نيون & RGB</h3>
+                        <p>إضاءات نيون مخصصة، واجهات ضوئية مبتكرة، تركيبات فنية، وأنفاق ضوئية مذهلة تضيف بُعداً بصرياً استثنائياً.</p>
+                        <div class="card-tags">
+                            <span>نيون مخصص</span>
+                            <span>RGB ديناميكي</span>
+                            <span>أنفاق ضوئية</span>
+                        </div>
+                        <div class="featured-badge">الأكثر طلباً</div>
+                    </div>
+                    <div class="card-glow neon-glow"></div>
+                </div>
+
+                <div class="service-card" data-service="led">
+                    <div class="card-bg"></div>
+                    <div class="card-content">
+                        <div class="service-icon">
+                            <div class="icon-box">
+                                <svg viewBox="0 0 80 80" width="50" height="50">
+                                    <rect x="10" y="15" width="60" height="50" rx="3" fill="none" stroke="#00FFFF" stroke-width="2"/>
+                                    <rect x="15" y="20" width="50" height="40" fill="rgba(0,255,255,0.1)"/>
+                                    <text x="40" y="45" text-anchor="middle" fill="#FF00FF" font-size="12" font-family="Orbitron">LED</text>
+                                </svg>
+                            </div>
+                        </div>
+                        <h3>شاشات LED عالية الدقة</h3>
+                        <p>P1.9 • P2.6 — شاشات رقمية، جدران عرض، أعمدة تفاعلية، وعروض مرئية جاهزة لأي مساحة.</p>
+                        <div class="card-tags">
+                            <span>دقة عالية</span>
+                            <span>أحجام متعددة</span>
+                            <span>تركيب آمن</span>
+                        </div>
+                    </div>
+                    <div class="card-glow"></div>
+                </div>
+
+                <div class="service-card" data-service="decor">
+                    <div class="card-bg"></div>
+                    <div class="card-content">
+                        <div class="service-icon">
+                            <div class="icon-box">
+                                <svg viewBox="0 0 80 80" width="50" height="50">
+                                    <rect x="20" y="50" width="40" height="20" fill="none" stroke="#DEB887" stroke-width="2"/>
+                                    <rect x="25" y="40" width="30" height="10" fill="rgba(222,184,135,0.3)"/>
+                                    <polygon points="40,15 55,35 25,35" fill="none" stroke="#FF00FF" stroke-width="2"/>
+                                    <circle cx="40" cy="25" r="5" fill="#FFD700"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <h3>الديكور والتجهيزات</h3>
+                        <p>منصات، مداخل، طاولات استقبال، ستاندات عرض، مناطق VIP، وديكور خشبي فاخر لكل أنواع الفعاليات.</p>
+                        <div class="card-tags">
+                            <span>خشب طبيعي</span>
+                            <span>تصميم VIP</span>
+                            <span>تنفيذ دقيق</span>
+                        </div>
+                    </div>
+                    <div class="card-glow"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section class="portfolio" id="portfolio">
+        <div class="container">
+            <div class="section-header center">
+                <span class="section-tag">أعمالنا</span>
+                <h2 class="section-title">مشاريع <span class="neon-text">صنعت</span> الفارق</h2>
+            </div>
+
+            <div class="portfolio-filter">
+                <button class="filter-btn active" data-filter="all">الكل</button>
+                <button class="filter-btn" data-filter="booth">بوثات</button>
+                <button class="filter-btn" data-filter="neon">نيون</button>
+                <button class="filter-btn" data-filter="event">فعاليات</button>
+            </div>
+
+            <div class="portfolio-grid">
+                <div class="portfolio-item large" data-category="neon">
+                    <div class="item-image">
+                        <img src="images/portfolio/portfolio-1.jpeg" alt="بوليفارد الرياض">
+                        <div class="item-overlay">
+                            <div class="overlay-content">
+                                <span class="item-category">نيون & LED</span>
+                                <h3>بوليفارد الرياض</h3>
+                                <p>مسارات ضوئية تفاعلية وتجربة مستقبلية</p>
+                                <span class="item-year">2023</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-frame"></div>
+                </div>
+
+                <div class="portfolio-item" data-category="neon">
+                    <div class="item-image">
+                        <img src="images/portfolio/portfolio-2.jpeg" alt="سناب شات">
+                        <div class="item-overlay">
+                            <div class="overlay-content">
+                                <span class="item-category">نيون مخصص</span>
+                                <h3>مقر سناب شات</h3>
+                                <p>ديكور عصري يعكس هوية Snapchat</p>
+                                <span class="item-year">الرياض</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-frame"></div>
+                </div>
+
+                <div class="portfolio-item" data-category="booth">
+                    <div class="item-image">
+                        <img src="images/portfolio/portfolio-3.jpeg" alt="أصول العقارية">
+                        <div class="item-overlay">
+                            <div class="overlay-content">
+                                <span class="item-category">بوث معرض</span>
+                                <h3>أصول العقارية</h3>
+                                <p>تصميم معماري بإضاءة ديناميكية</p>
+                                <span class="item-year">2025</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-frame"></div>
+                </div>
+
+                <div class="portfolio-item" data-category="event">
+                    <div class="item-image">
+                        <img src="images/portfolio/portfolio-4.jpeg" alt="مؤسسة مسك">
+                        <div class="item-overlay">
+                            <div class="overlay-content">
+                                <span class="item-category">فعالية</span>
+                                <h3>مؤسسة مسك</h3>
+                                <p>هوية بصرية فاخرة وإضاءة متوازنة</p>
+                                <span class="item-year">2022</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-frame"></div>
+                </div>
+
+                <div class="portfolio-item large" data-category="booth">
+                    <div class="item-image">
+                        <img src="images/portfolio/portfolio-5.jpeg" alt="استثمر في السعودية">
+                        <div class="item-overlay">
+                            <div class="overlay-content">
+                                <span class="item-category">معرض تقني</span>
+                                <h3>استثمر في السعودية</h3>
+                                <p>أعمدة رقمية وشاشات تفاعلية</p>
+                                <span class="item-year">2025</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-frame"></div>
+                </div>
+
+                <div class="portfolio-item" data-category="neon">
+                    <div class="item-image">
+                        <img src="images/portfolio/portfolio-6.jpeg" alt="أرامكس">
+                        <div class="item-overlay">
+                            <div class="overlay-content">
+                                <span class="item-category">نيون</span>
+                                <h3>مقر أرامكس</h3>
+                                <p>إضاءات نيون عالية الجودة</p>
+                                <span class="item-year">الرياض</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-frame"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section class="process" id="process">
+        <div class="container">
+            <div class="section-header center">
+                <span class="section-tag">آلية العمل</span>
+                <h2 class="section-title">من <span class="wood-text">الفكرة</span> إلى <span class="neon-text">الإبهار</span></h2>
+            </div>
+
+            <div class="process-timeline">
+                <div class="timeline-line">
+                    <div class="line-progress"></div>
+                </div>
+
+                <div class="process-step" data-step="1">
+                    <div class="step-marker">
+                        <span class="step-number">01</span>
+                        <div class="marker-ring"></div>
+                    </div>
+                    <div class="step-content glass-card">
+                        <div class="step-icon">💡</div>
+                        <h3>الفكرة والدراسة</h3>
+                        <p>استقبال رؤية العميل وتحويلها إلى مخطط إبداعي متكامل مع دراسة الجدوى والميزانية.</p>
+                    </div>
+                </div>
+
+                <div class="process-step" data-step="2">
+                    <div class="step-marker">
+                        <span class="step-number">02</span>
+                        <div class="marker-ring"></div>
+                    </div>
+                    <div class="step-content glass-card">
+                        <div class="step-icon">📐</div>
+                        <h3>التصميم الهندسي</h3>
+                        <p>نماذج ثلاثية الأبعاد، مخططات فنية، خرائط إضاءة، ومواصفات تفصيلية للموافقة.</p>
+                    </div>
+                </div>
+
+                <div class="process-step" data-step="3">
+                    <div class="step-marker">
+                        <span class="step-number">03</span>
+                        <div class="marker-ring"></div>
+                    </div>
+                    <div class="step-content glass-card">
+                        <div class="step-icon">🔨</div>
+                        <h3>التصنيع</h3>
+                        <p>تنفيذ جميع المكوّنات في ورشنا باستخدام أحدث التقنيات — CNC، نجارة، لحام، ودهانات.</p>
+                    </div>
+                </div>
+
+                <div class="process-step" data-step="4">
+                    <div class="step-marker">
+                        <span class="step-number">04</span>
+                        <div class="marker-ring"></div>
+                    </div>
+                    <div class="step-content glass-card">
+                        <div class="step-icon">🏗️</div>
+                        <h3>التركيب</h3>
+                        <p>فريق تنفيذي محترف يتولى جميع عمليات التركيب والتشغيل في موقع الفعالية.</p>
+                    </div>
+                </div>
+
+                <div class="process-step" data-step="5">
+                    <div class="step-marker">
+                        <span class="step-number">05</span>
+                        <div class="marker-ring"></div>
+                    </div>
+                    <div class="step-content glass-card">
+                        <div class="step-icon">⚡</div>
+                        <h3>يوم الإبهار</h3>
+                        <p>تشغيل كامل: صوت، ضوء، حركة، استقبال — مع متابعة مستمرة لضمان الكمال والانسيابية.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Clients Section -->
+    <section class="clients">
+        <div class="container">
+            <div class="section-header center">
+                <span class="section-tag">شركاؤنا</span>
+                <h2 class="section-title">ثقة <span class="gradient-text">الكبار</span></h2>
+            </div>
+
+            <div class="clients-marquee">
+                <div class="marquee-track">
+                    <div class="client-logo"><img src="images/clients/aramex.png" alt="أرامكس"></div>
+                    <div class="client-logo"><img src="images/clients/salla.png" alt="سلا"></div>
+                    <div class="client-logo"><img src="images/clients/snapchat.png" alt="سناب شات"></div>
+                    <div class="client-logo"><img src="images/clients/sab.png" alt="SAB"></div>
+                    <div class="client-logo"><img src="images/clients/misk.png" alt="مسك"></div>
+                    <div class="client-logo"><img src="images/clients/neom.png" alt="نيوم"></div>
+                    <div class="client-logo"><img src="images/clients/aramex.png" alt="أرامكس"></div>
+                    <div class="client-logo"><img src="images/clients/salla.png" alt="سلا"></div>
+                    <div class="client-logo"><img src="images/clients/snapchat.png" alt="سناب شات"></div>
+                    <div class="client-logo"><img src="images/clients/sab.png" alt="SAB"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <div class="section-header">
+                        <span class="section-tag">تواصل معنا</span>
+                        <h2 class="section-title">لنصنع <span class="neon-text">تجربتك</span> معاً</h2>
+                    </div>
+
+                    <p class="contact-desc">فريقنا مستعد لتحويل رؤيتك إلى واقع مبهر. تواصل معنا اليوم وابدأ رحلة الإبداع.</p>
+
+                    <div class="contact-methods">
+                        <a href="tel:+966505518104" class="contact-method">
+                            <div class="method-icon">📞</div>
+                            <div class="method-info">
+                                <span class="method-label">اتصل بنا</span>
+                                <span class="method-value" dir="ltr">+966 505 518 104</span>
+                            </div>
+                        </a>
+                        <a href="mailto:voltag.bright.v@gmail.com" class="contact-method">
+                            <div class="method-icon">📧</div>
+                            <div class="method-info">
+                                <span class="method-label">البريد الإلكتروني</span>
+                                <span class="method-value">voltag.bright.v@gmail.com</span>
+                            </div>
+                        </a>
+                        <div class="contact-method">
+                            <div class="method-icon">📍</div>
+                            <div class="method-info">
+                                <span class="method-label">موقعنا</span>
+                                <span class="method-value">الرياض، المملكة العربية السعودية</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="social-links">
+                        <a href="#" class="social-link" aria-label="Instagram">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073z"/>
+                                <path d="M12 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8z"/>
+                                <circle cx="18.406" cy="5.594" r="1.44"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Twitter">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link" aria-label="LinkedIn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="contact-form-wrapper">
+                    <form class="contact-form glass-card" id="contactForm">
+                        <div class="form-group">
+                            <input type="text" id="name" name="name" required placeholder=" ">
+                            <label for="name">الاسم الكامل</label>
+                            <div class="input-line"></div>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="email" name="email" required placeholder=" ">
+                            <label for="email">البريد الإلكتروني</label>
+                            <div class="input-line"></div>
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" id="phone" name="phone" placeholder=" ">
+                            <label for="phone">رقم الجوال</label>
+                            <div class="input-line"></div>
+                        </div>
+                        <div class="form-group">
+                            <select id="service" name="service" required>
+                                <option value="">اختر الخدمة</option>
+                                <option value="booth">تصميم بوث</option>
+                                <option value="event">إدارة فعالية</option>
+                                <option value="neon">إضاءة نيون</option>
+                                <option value="led">شاشات LED</option>
+                                <option value="conference">إنتاج مؤتمر</option>
+                                <option value="other">أخرى</option>
+                            </select>
+                            <div class="input-line"></div>
+                        </div>
+                        <div class="form-group full">
+                            <textarea id="message" name="message" rows="4" required placeholder=" "></textarea>
+                            <label for="message">تفاصيل المشروع</label>
+                            <div class="input-line"></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-submit">
+                            <span>أرسل طلبك</span>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <svg viewBox="0 0 50 50" width="50" height="50">
+                            <polygon points="25,2 48,14 48,36 25,48 2,36 2,14" fill="none" stroke="#00FFFF" stroke-width="1.5"/>
+                            <path d="M20,12 L30,12 L25,22 L33,22 L17,40 L22,25 L14,25 Z" fill="#FF00FF"/>
+                        </svg>
+                        <span>VOLTAGE</span>
+                    </div>
+                    <p>نبني لك تجربة… تبقى في الذاكرة.</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#about">من نحن</a>
+                    <a href="#services">خدماتنا</a>
+                    <a href="#portfolio">أعمالنا</a>
+                    <a href="#contact">تواصل</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 VOLTAGE. جميع الحقوق محفوظة.</p>
+                <p>صُنع بـ ⚡ في الرياض</p>
+            </div>
+        </div>
+        <div class="footer-glow"></div>
+    </footer>
+
+    <script src="js/ultimate.js"></script>
+</body>
+</html>
