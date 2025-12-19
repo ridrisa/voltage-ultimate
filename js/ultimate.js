@@ -8,12 +8,22 @@
 // ============================================================
 const CONFIG = {
     particles: {
-        count: 120,
-        colors: ['#00ffff', '#ff00ff', '#00ff88', '#ffff00', '#ff6600'],
-        maxSize: 4,
-        speed: 0.8,
-        connectionDistance: 150,
-        mouseInfluence: 100
+        count: 60,  // Fewer but larger neon bulbs
+        colors: [
+            { main: '#00ffff', glow: '#00ffff', name: 'cyan' },
+            { main: '#ff00ff', glow: '#ff00ff', name: 'magenta' },
+            { main: '#00ff88', glow: '#00ff88', name: 'green' },
+            { main: '#ffff00', glow: '#ffff00', name: 'yellow' },
+            { main: '#ff6600', glow: '#ff4400', name: 'orange' },
+            { main: '#ff0066', glow: '#ff0066', name: 'pink' }
+        ],
+        minSize: 8,
+        maxSize: 25,  // Much larger for bulb effect
+        speed: 0.3,   // Slower, more floating
+        connectionDistance: 200,
+        mouseInfluence: 150,
+        glowIntensity: 1.5,
+        flickerChance: 0.02
     },
     cursor: {
         size: 20,
@@ -262,7 +272,7 @@ class ParticleSystem {
             particle.update(this.mouse);
             particle.draw(this.ctx);
 
-            // Connect nearby particles
+            // Connect nearby bulbs with neon wire effect
             for (let j = index + 1; j < this.particles.length; j++) {
                 const other = this.particles[j];
                 const dx = particle.x - other.x;
@@ -270,9 +280,43 @@ class ParticleSystem {
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
                 if (distance < CONFIG.particles.connectionDistance) {
-                    const opacity = 1 - distance / CONFIG.particles.connectionDistance;
+                    const opacity = (1 - distance / CONFIG.particles.connectionDistance) * 0.6;
+
+                    // Create gradient wire between bulbs
+                    const gradient = this.ctx.createLinearGradient(
+                        particle.x, particle.y,
+                        other.x, other.y
+                    );
+
+                    // Use colors from both connected bulbs
+                    const color1 = particle.mainColor || '#00ffff';
+                    const color2 = other.mainColor || '#ff00ff';
+
+                    gradient.addColorStop(0, color1);
+                    gradient.addColorStop(0.5, `rgba(255, 255, 255, ${opacity})`);
+                    gradient.addColorStop(1, color2);
+
+                    // Outer glow for wire
                     this.ctx.beginPath();
-                    this.ctx.strokeStyle = `rgba(0, 255, 255, ${opacity * 0.3})`;
+                    this.ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.3})`;
+                    this.ctx.lineWidth = 4;
+                    this.ctx.lineCap = 'round';
+                    this.ctx.moveTo(particle.x, particle.y);
+                    this.ctx.lineTo(other.x, other.y);
+                    this.ctx.stroke();
+
+                    // Inner wire
+                    this.ctx.beginPath();
+                    this.ctx.strokeStyle = gradient;
+                    this.ctx.lineWidth = 2;
+                    this.ctx.lineCap = 'round';
+                    this.ctx.moveTo(particle.x, particle.y);
+                    this.ctx.lineTo(other.x, other.y);
+                    this.ctx.stroke();
+
+                    // Core bright line
+                    this.ctx.beginPath();
+                    this.ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.8})`;
                     this.ctx.lineWidth = 0.5;
                     this.ctx.moveTo(particle.x, particle.y);
                     this.ctx.lineTo(other.x, other.y);
@@ -285,7 +329,7 @@ class ParticleSystem {
     }
 }
 
-class Particle {
+class NeonBulb {
     constructor(canvas, config) {
         this.canvas = canvas;
         this.config = config;
@@ -295,25 +339,51 @@ class Particle {
     reset() {
         this.x = Math.random() * this.canvas.width;
         this.y = Math.random() * this.canvas.height;
-        this.size = Math.random() * this.config.maxSize + 1;
+        this.size = this.config.minSize + Math.random() * (this.config.maxSize - this.config.minSize);
         this.baseSize = this.size;
         this.speedX = (Math.random() - 0.5) * this.config.speed;
         this.speedY = (Math.random() - 0.5) * this.config.speed;
-        this.color = this.config.colors[Math.floor(Math.random() * this.config.colors.length)];
+
+        // Color with glow properties
+        const colorData = this.config.colors[Math.floor(Math.random() * this.config.colors.length)];
+        this.mainColor = colorData.main;
+        this.glowColor = colorData.glow;
+        this.colorName = colorData.name;
+
+        // Animation properties
         this.pulse = Math.random() * Math.PI * 2;
-        this.pulseSpeed = 0.02 + Math.random() * 0.02;
+        this.pulseSpeed = 0.015 + Math.random() * 0.015;
+        this.flickerState = 1;
+        this.flickerTarget = 1;
+        this.rotation = Math.random() * Math.PI * 2;
+        this.rotationSpeed = (Math.random() - 0.5) * 0.01;
+
+        // Bulb shape variation
+        this.bulbType = Math.floor(Math.random() * 3); // 0: round, 1: oval, 2: tube
+        this.aspectRatio = this.bulbType === 1 ? 0.6 + Math.random() * 0.3 : 1;
     }
 
     update(mouse) {
-        // Movement
+        // Smooth floating movement
         this.x += this.speedX;
         this.y += this.speedY;
+        this.rotation += this.rotationSpeed;
 
-        // Pulse effect
+        // Pulse effect - breathing glow
         this.pulse += this.pulseSpeed;
-        this.size = this.baseSize + Math.sin(this.pulse) * 1;
+        const pulseFactor = 0.15;
+        this.size = this.baseSize * (1 + Math.sin(this.pulse) * pulseFactor);
 
-        // Mouse interaction
+        // Neon flicker effect
+        if (Math.random() < this.config.flickerChance) {
+            this.flickerTarget = 0.3 + Math.random() * 0.4;
+            setTimeout(() => {
+                this.flickerTarget = 1;
+            }, 50 + Math.random() * 100);
+        }
+        this.flickerState += (this.flickerTarget - this.flickerState) * 0.3;
+
+        // Mouse interaction - bulbs brighten near cursor
         if (mouse.x !== null && mouse.y !== null) {
             const dx = mouse.x - this.x;
             const dy = mouse.y - this.y;
@@ -321,40 +391,124 @@ class Particle {
 
             if (distance < this.config.mouseInfluence) {
                 const force = (this.config.mouseInfluence - distance) / this.config.mouseInfluence;
-                this.x -= dx * force * 0.02;
-                this.y -= dy * force * 0.02;
-                this.size = this.baseSize + force * 3;
+                // Gentle repulsion
+                this.x -= dx * force * 0.015;
+                this.y -= dy * force * 0.015;
+                // Brighten on approach
+                this.size = this.baseSize * (1 + force * 0.5);
             }
         }
 
-        // Boundary check
-        if (this.x < 0 || this.x > this.canvas.width) this.speedX *= -1;
-        if (this.y < 0 || this.y > this.canvas.height) this.speedY *= -1;
+        // Boundary check with smooth bounce
+        if (this.x < this.size || this.x > this.canvas.width - this.size) {
+            this.speedX *= -0.8;
+            this.x = Math.max(this.size, Math.min(this.canvas.width - this.size, this.x));
+        }
+        if (this.y < this.size || this.y > this.canvas.height - this.size) {
+            this.speedY *= -0.8;
+            this.y = Math.max(this.size, Math.min(this.canvas.height - this.size, this.y));
+        }
+    }
+
+    hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : { r: 255, g: 255, b: 255 };
     }
 
     draw(ctx) {
-        ctx.beginPath();
+        const rgb = this.hexToRgb(this.mainColor);
+        const glowRgb = this.hexToRgb(this.glowColor);
+        const intensity = this.flickerState * this.config.glowIntensity;
 
-        // Glow effect
-        const gradient = ctx.createRadialGradient(
-            this.x, this.y, 0,
-            this.x, this.y, this.size * 3
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+
+        // === OUTER GLOW (Neon gas effect) ===
+        const outerGlowSize = this.size * 4;
+        const outerGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, outerGlowSize);
+        outerGradient.addColorStop(0, `rgba(${glowRgb.r}, ${glowRgb.g}, ${glowRgb.b}, ${0.4 * intensity})`);
+        outerGradient.addColorStop(0.3, `rgba(${glowRgb.r}, ${glowRgb.g}, ${glowRgb.b}, ${0.2 * intensity})`);
+        outerGradient.addColorStop(0.6, `rgba(${glowRgb.r}, ${glowRgb.g}, ${glowRgb.b}, ${0.08 * intensity})`);
+        outerGradient.addColorStop(1, 'transparent');
+
+        ctx.fillStyle = outerGradient;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, outerGlowSize, outerGlowSize * this.aspectRatio, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // === MIDDLE GLOW (Intense neon) ===
+        const midGlowSize = this.size * 2.2;
+        const midGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, midGlowSize);
+        midGradient.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.8 * intensity})`);
+        midGradient.addColorStop(0.4, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.4 * intensity})`);
+        midGradient.addColorStop(0.7, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.15 * intensity})`);
+        midGradient.addColorStop(1, 'transparent');
+
+        ctx.fillStyle = midGradient;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, midGlowSize, midGlowSize * this.aspectRatio, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // === GLASS BULB (Semi-transparent shell) ===
+        const bulbGradient = ctx.createRadialGradient(
+            -this.size * 0.3, -this.size * 0.3, 0,
+            0, 0, this.size
         );
-        gradient.addColorStop(0, this.color);
-        gradient.addColorStop(0.5, this.color.replace(')', ', 0.3)').replace('rgb', 'rgba'));
-        gradient.addColorStop(1, 'transparent');
+        bulbGradient.addColorStop(0, `rgba(255, 255, 255, ${0.3 * intensity})`);
+        bulbGradient.addColorStop(0.3, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.2 * intensity})`);
+        bulbGradient.addColorStop(0.7, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.4 * intensity})`);
+        bulbGradient.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.1 * intensity})`);
 
-        ctx.fillStyle = gradient;
-        ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Core
+        ctx.fillStyle = bulbGradient;
         ctx.beginPath();
-        ctx.fillStyle = this.color;
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.ellipse(0, 0, this.size, this.size * this.aspectRatio, 0, 0, Math.PI * 2);
         ctx.fill();
+
+        // === GLASS OUTLINE ===
+        ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.6 * intensity})`;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, this.size, this.size * this.aspectRatio, 0, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // === FILAMENT CORE (Bright center) ===
+        const coreSize = this.size * 0.4;
+        const coreGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, coreSize);
+        coreGradient.addColorStop(0, `rgba(255, 255, 255, ${1 * intensity})`);
+        coreGradient.addColorStop(0.3, `rgba(255, 255, 255, ${0.9 * intensity})`);
+        coreGradient.addColorStop(0.6, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.8 * intensity})`);
+        coreGradient.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.3 * intensity})`);
+
+        ctx.fillStyle = coreGradient;
+        ctx.beginPath();
+        ctx.arc(0, 0, coreSize, 0, Math.PI * 2);
+        ctx.fill();
+
+        // === GLASS REFLECTION (Highlight) ===
+        const reflectGradient = ctx.createRadialGradient(
+            -this.size * 0.35, -this.size * 0.35, 0,
+            -this.size * 0.2, -this.size * 0.2, this.size * 0.4
+        );
+        reflectGradient.addColorStop(0, `rgba(255, 255, 255, ${0.5 * intensity})`);
+        reflectGradient.addColorStop(0.5, `rgba(255, 255, 255, ${0.2 * intensity})`);
+        reflectGradient.addColorStop(1, 'transparent');
+
+        ctx.fillStyle = reflectGradient;
+        ctx.beginPath();
+        ctx.ellipse(-this.size * 0.25, -this.size * 0.25, this.size * 0.3, this.size * 0.2, -0.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
     }
 }
+
+// Alias for compatibility
+const Particle = NeonBulb;
 
 // ============================================================
 // FLOATING NEON ELEMENTS
