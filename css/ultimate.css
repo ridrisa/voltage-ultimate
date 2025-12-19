@@ -122,9 +122,12 @@ body {
 
 .loader-text {
     display: flex;
+    flex-direction: row;
+    direction: ltr;
     gap: 5px;
     justify-content: center;
     margin-bottom: 30px;
+    unicode-bidi: bidi-override;
 }
 
 .loader-text span {
