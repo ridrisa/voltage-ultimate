@@ -205,13 +205,21 @@ body {
 }
 
 /* ========================================
-   BACKGROUND LAYERS
+   BACKGROUND LAYERS - NEON WALLPAPER STYLE
    ======================================== */
 .bg-layers {
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 0;
+    background:
+        /* Neon glow spots */
+        radial-gradient(ellipse 600px 400px at 10% 20%, rgba(0, 255, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse 500px 500px at 90% 80%, rgba(255, 0, 255, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse 400px 300px at 70% 30%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse 350px 350px at 30% 70%, rgba(255, 102, 0, 0.08) 0%, transparent 50%),
+        /* Base dark gradient */
+        linear-gradient(135deg, #0a0a12 0%, #12121f 50%, #0a0a12 100%);
 }
 
 #particleCanvas {
@@ -219,57 +227,108 @@ body {
     inset: 0;
     width: 100%;
     height: 100%;
+    opacity: 0.8;
 }
 
+/* Neon Tube Strips - Horizontal */
 .wood-grain-overlay {
     position: absolute;
     inset: 0;
     background-image:
-        repeating-linear-gradient(
-            90deg,
-            transparent,
-            transparent 100px,
-            rgba(222, 184, 135, 0.02) 100px,
-            rgba(222, 184, 135, 0.02) 102px
-        ),
-        repeating-linear-gradient(
-            0deg,
-            transparent,
-            transparent 200px,
-            rgba(139, 69, 19, 0.015) 200px,
-            rgba(139, 69, 19, 0.015) 203px
+        /* Horizontal neon tubes */
+        linear-gradient(0deg,
+            transparent 0%,
+            transparent calc(15% - 2px),
+            rgba(0, 255, 255, 0.03) calc(15% - 2px),
+            rgba(0, 255, 255, 0.15) 15%,
+            rgba(0, 255, 255, 0.03) calc(15% + 2px),
+            transparent calc(15% + 2px),
+            transparent calc(40% - 2px),
+            rgba(255, 0, 255, 0.03) calc(40% - 2px),
+            rgba(255, 0, 255, 0.12) 40%,
+            rgba(255, 0, 255, 0.03) calc(40% + 2px),
+            transparent calc(40% + 2px),
+            transparent calc(65% - 2px),
+            rgba(0, 255, 136, 0.03) calc(65% - 2px),
+            rgba(0, 255, 136, 0.1) 65%,
+            rgba(0, 255, 136, 0.03) calc(65% + 2px),
+            transparent calc(65% + 2px),
+            transparent calc(85% - 2px),
+            rgba(255, 102, 0, 0.03) calc(85% - 2px),
+            rgba(255, 102, 0, 0.08) 85%,
+            rgba(255, 102, 0, 0.03) calc(85% + 2px),
+            transparent calc(85% + 2px),
+            transparent 100%
         );
-    opacity: 0.5;
+    animation: neonPulse 4s ease-in-out infinite alternate;
 }
 
+@keyframes neonPulse {
+    0% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+/* Vertical Neon Strips */
 .booth-grid {
     position: absolute;
     inset: 0;
     background-image:
-        linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: 60px 60px;
-    mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+        /* Vertical neon tubes */
+        linear-gradient(90deg,
+            transparent 0%,
+            transparent calc(20% - 1px),
+            rgba(0, 255, 255, 0.08) 20%,
+            transparent calc(20% + 1px),
+            transparent calc(45% - 1px),
+            rgba(255, 0, 255, 0.06) 45%,
+            transparent calc(45% + 1px),
+            transparent calc(75% - 1px),
+            rgba(0, 255, 136, 0.07) 75%,
+            transparent calc(75% + 1px),
+            transparent 100%
+        );
+    animation: neonPulse 5s ease-in-out infinite alternate-reverse;
 }
 
+/* Diagonal Neon Accents */
 .scanlines {
     position: absolute;
     inset: 0;
-    background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0, 0, 0, 0.03) 2px,
-        rgba(0, 0, 0, 0.03) 4px
-    );
+    background:
+        /* Diagonal neon streaks */
+        linear-gradient(45deg,
+            transparent 0%,
+            transparent 48%,
+            rgba(0, 255, 255, 0.02) 49%,
+            rgba(0, 255, 255, 0.05) 50%,
+            rgba(0, 255, 255, 0.02) 51%,
+            transparent 52%,
+            transparent 100%
+        ),
+        linear-gradient(-45deg,
+            transparent 0%,
+            transparent 48%,
+            rgba(255, 0, 255, 0.02) 49%,
+            rgba(255, 0, 255, 0.04) 50%,
+            rgba(255, 0, 255, 0.02) 51%,
+            transparent 52%,
+            transparent 100%
+        );
+    background-size: 100px 100px;
     pointer-events: none;
+    animation: diagonalShift 20s linear infinite;
+}
+
+@keyframes diagonalShift {
+    0% { background-position: 0 0, 0 0; }
+    100% { background-position: 100px 100px, -100px 100px; }
 }
 
 .vignette {
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse at center, transparent 0%, var(--bg-primary) 100%);
-    opacity: 0.4;
+    background: radial-gradient(ellipse at center, transparent 0%, rgba(10, 10, 18, 0.6) 100%);
+    opacity: 0.8;
 }
 
 /* ========================================
