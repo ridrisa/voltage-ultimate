@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0a0f">
+    <title>معرض الأعمال | VOLTAGE</title>
+    <meta name="description" content="معرض أعمال فولتج الكامل - أكثر من 300 مشروع في المعارض والنيون">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/ultimate.css">
+    <style>
+        /* Gallery Page Specific Styles */
+        .gallery-hero {
+            padding: 120px 0 60px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(0,255,255,0.05) 0%, transparent 100%);
+        }
+
+        .gallery-hero h1 {
+            font-family: 'Tajawal', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .gallery-hero .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .gallery-hero .stat-item {
+            text-align: center;
+        }
+
+        .gallery-hero .stat-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00FFFF, #FF00FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gallery-hero .stat-label {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+        }
+
+        .gallery-filters {
+            position: sticky;
+            top: 70px;
+            z-index: 100;
+            background: rgba(10,10,15,0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(0,255,255,0.1);
+        }
+
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .category-btn {
+            padding: 0.75rem 1.5rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(0,255,255,0.2);
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        .category-btn:hover {
+            background: rgba(0,255,255,0.1);
+            border-color: #00FFFF;
+        }
+
+        .category-btn.active {
+            background: linear-gradient(135deg, rgba(0,255,255,0.2), rgba(255,0,255,0.2));
+            border-color: #00FFFF;
+            box-shadow: 0 0 20px rgba(0,255,255,0.3);
+        }
+
+        .gallery-section {
+            padding: 3rem 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .project-section {
+            margin-bottom: 4rem;
+        }
+
+        .project-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0,255,255,0.2);
+        }
+
+        .project-header h2 {
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .project-header .image-count {
+            background: linear-gradient(135deg, #00FFFF, #FF00FF);
+            color: #0a0a0f;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .project-header .category-tag {
+            padding: 0.25rem 0.75rem;
+            background: rgba(255,0,255,0.2);
+            border: 1px solid rgba(255,0,255,0.4);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #FF00FF;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .image-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(0,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .image-item:hover {
+            transform: scale(1.02);
+            border-color: #00FFFF;
+            box-shadow: 0 10px 40px rgba(0,255,255,0.2);
+        }
+
+        .image-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .image-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .image-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: flex-end;
+            padding: 1rem;
+        }
+
+        .image-item:hover .image-overlay {
+            opacity: 1;
+        }
+
+        .zoom-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 50px;
+            height: 50px;
+            background: rgba(0,255,255,0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .image-item:hover .zoom-icon {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .zoom-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: #0a0a0f;
+        }
+
+        /* Lightbox */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+
+        .lightbox-content img {
+            max-width: 100%;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,255,255,0.2);
+            border: 1px solid #00FFFF;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .lightbox-nav:hover {
+            background: rgba(0,255,255,0.4);
+        }
+
+        .lightbox-prev { left: -70px; }
+        .lightbox-next { right: -70px; }
+
+        .lightbox-info {
+            text-align: center;
+            margin-top: 1rem;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #00FFFF;
+            text-decoration: none;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #FF00FF;
+        }
+
+        /* Loading state */
+        .image-item.loading {
+            background: linear-gradient(90deg, rgba(0,255,255,0.1) 0%, rgba(255,0,255,0.1) 50%, rgba(0,255,255,0.1) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Category sections visibility */
+        .project-section[data-category] {
+            display: block;
+        }
+
+        .project-section.hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .image-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 0.5rem;
+            }
+
+            .lightbox-nav {
+                width: 40px;
+                height: 40px;
+            }
+
+            .lightbox-prev { left: 10px; }
+            .lightbox-next { right: 10px; }
+
+            .gallery-hero .stats-bar {
+                gap: 1.5rem;
+            }
+
+            .gallery-hero .stat-number {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Content replaced from /content.txt -->
+    <!-- Background -->
+    <div class="bg-layers">
+        <div class="wood-grain-overlay"></div>
+        <div class="scanlines"></div>
+        <div class="vignette"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 50 50" width="45" height="45">
+                        <polygon points="25,2 48,14 48,36 25,48 2,36 2,14" fill="none" stroke="#00FFFF" stroke-width="1.5"/>
+                        <path d="M20,12 L30,12 L25,22 L33,22 L17,40 L22,25 L14,25 Z" fill="#FF00FF"/>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <span class="en" dir="ltr">VOLTAGE</span>
+                    <span class="ar">فولتج</span>
+                </div>
+            </a>
+
+            <ul class="nav-menu">
+                <li><a href="index.html#about" class="nav-link"><span class="link-text">من نحن</span></a></li>
+                <li><a href="index.html#services" class="nav-link"><span class="link-text">خدماتنا</span></a></li>
+                <li><a href="index.html#portfolio" class="nav-link"><span class="link-text">أعمالنا</span></a></li>
+                <li><a href="index.html#contact" class="nav-link"><span class="link-text">تواصل</span></a></li>
+            </ul>
+
+            <a href="index.html#contact" class="nav-cta">
+                <span>ابدأ مشروعك</span>
+                <div class="cta-glow"></div>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Gallery Hero -->
+    <section class="gallery-hero">
+        <div class="container">
+            <a href="index.html#portfolio" class="back-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                العودة للرئيسية
+            </a>
+            <h1>معرض الأعمال <span class="neon-text">الكامل</span></h1>
+            <p style="color: rgba(255,255,255,0.7); font-size: 1.1rem;">استعرض جميع مشاريعنا بالتفصيل</p>
+
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-number">346</div>
+                    <div class="stat-label">صورة</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">21</div>
+                    <div class="stat-label">مشروع</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">فئة رئيسية</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filters -->
+    <div class="gallery-filters">
+        <div class="filter-container">
+            <button class="category-btn active" data-filter="all">الكل (346)</button>
+            <button class="category-btn" data-filter="neon">نيون (248)</button>
+            <button class="category-btn" data-filter="events">فعاليات (98)</button>
+        </div>
+    </div>
+
+    <!-- Gallery Content -->
+    <section class="gallery-section">
+
+        <!-- NEON PROJECTS -->
+
+        <!-- Boulevard -->
+        <div class="project-section" data-category="neon" id="project-boulevard">
+            <div class="project-header">
+                <h2>بوليفارد الرياض</h2>
+                <span class="image-count">21 صورة</span>
+                <span class="category-tag">نيون</span>
+            </div>
+            <div class="image-grid" id="grid-boulevard"></div>
+        </div>
+
+        <!-- Aramex -->
+        <div class="project-section" data-category="neon" id="project-aramex">
+            <div class="project-header">
+                <h2>أرامكس</h2>
+                <span class="image-count">14 صورة</span>
+                <span class="category-tag">نيون</span>
+            </div>
+            <div class="image-grid" id="grid-aramex"></div>
+        </div>
+
+        <!-- Snapchat -->
+        <div class="project-section" data-category="neon" id="project-snapchat">
+            <div class="project-header">
+                <h2>سناب شات</h2>
+                <span class="image-count">11 صورة</span>
+                <span class="category-tag">نيون</span>
+            </div>
+            <div class="image-grid" id="grid-snapchat"></div>
+        </div>
+
+        <!-- National -->
+        <div class="project-section" data-category="neon" id="project-national">
+            <div class="project-header">
+                <h2>اليوم الوطني</h2>
+                <span class="image-count">15 صورة</span>
+                <span class="category-tag">نيون</span>
+            </div>
+            <div class="image-grid" id="grid-national"></div>
+        </div>
+
+        <!-- Coffee -->
+        <div class="project-section" data-category="neon" id="project-coffee">
+            <div class="project-header">
+                <h2>مشاريع القهوة</h2>
+                <span class="image-count">21 صورة</span>
+                <span class="category-tag">نيون</span>
+            </div>
+            <div class="image-grid" id="grid-coffee"></div>
+        </div>
+
+        <!-- Games -->
+        <div class="project-section" data-category="neon" id="project-games">
+            <div class="project-header">
+                <h2>ألعاب نيون</h2>
+                <span class="image-count">114 صورة</span>
+                <span class="category-tag">نيون</span>
+            </div>
+            <div class="image-grid" id="grid-games"></div>
+        </div>
+
+        <!-- Association -->
+        <div class="project-section" data-category="neon" id="project-association">
+            <div class="project-header">
+                <h2>الجمعية</h2>
+                <span class="image-count">9 صور</span>
+                <span class="category-tag">نيون</span>
+            </div>
+            <div class="image-grid" id="grid-association"></div>
+        </div>
+
+        <!-- Shawarma -->
+        <div class="project-section" data-category="neon" id="project-shawarma">
+            <div class="project-header">
+                <h2>شاورما نيون</h2>
+                <span class="image-count">9 صور</span>
+                <span class="category-tag">نيون</span>
+            </div>
+            <div class="image-grid" id="grid-shawarma"></div>
+        </div>
+
+        <!-- Case Closed -->
+        <div class="project-section" data-category="neon" id="project-case-closed">
+            <div class="project-header">
+                <h2>Case Closed</h2>
+                <span class="image-count">8 صور</span>
+                <span class="category-tag">نيون</span>
+            </div>
+            <div class="image-grid" id="grid-case-closed"></div>
+        </div>
+
+        <!-- Ramadan -->
+        <div class="project-section" data-category="neon" id="project-ramadan">
+            <div class="project-header">
+                <h2>رمضان</h2>
+                <span class="image-count">7 صور</span>
+                <span class="category-tag">نيون</span>
+            </div>
+            <div class="image-grid" id="grid-ramadan"></div>
+        </div>
+
+        <!-- General -->
+        <div class="project-section" data-category="neon" id="project-general">
+            <div class="project-header">
+                <h2>مشاريع متنوعة</h2>
+                <span class="image-count">6 صور</span>
+                <span class="category-tag">نيون</span>
+            </div>
+            <div class="image-grid" id="grid-general"></div>
+        </div>
+
+        <!-- Bowling -->
+        <div class="project-section" data-category="neon" id="project-bowling">
+            <div class="project-header">
+                <h2>بولينج</h2>
+                <span class="image-count">5 صور</span>
+                <span class="category-tag">نيون</span>
+            </div>
+            <div class="image-grid" id="grid-bowling"></div>
+        </div>
+
+        <!-- Nouq -->
+        <div class="project-section" data-category="neon" id="project-nouq">
+            <div class="project-header">
+                <h2>نوق</h2>
+                <span class="image-count">3 صور</span>
+                <span class="category-tag">نيون</span>
+            </div>
+            <div class="image-grid" id="grid-nouq"></div>
+        </div>
+
+        <!-- Entrance -->
+        <div class="project-section" data-category="neon" id="project-entrance">
+            <div class="project-header">
+                <h2>مداخل</h2>
+                <span class="image-count">3 صور</span>
+                <span class="category-tag">نيون</span>
+            </div>
+            <div class="image-grid" id="grid-entrance"></div>
+        </div>
+
+        <!-- Wink Burger -->
+        <div class="project-section" data-category="neon" id="project-wink-burger">
+            <div class="project-header">
+                <h2>وينك برجر</h2>
+                <span class="image-count">2 صورة</span>
+                <span class="category-tag">نيون</span>
+            </div>
+            <div class="image-grid" id="grid-wink-burger"></div>
+        </div>
+
+        <!-- EVENTS PROJECTS -->
+
+        <!-- Zahid -->
+        <div class="project-section" data-category="events" id="project-zahid">
+            <div class="project-header">
+                <h2>زاهد</h2>
+                <span class="image-count">31 صورة</span>
+                <span class="category-tag">فعاليات</span>
+            </div>
+            <div class="image-grid" id="grid-zahid"></div>
+        </div>
+
+        <!-- Asool -->
+        <div class="project-section" data-category="events" id="project-asool">
+            <div class="project-header">
+                <h2>أصول العقارية</h2>
+                <span class="image-count">28 صورة</span>
+                <span class="category-tag">فعاليات</span>
+            </div>
+            <div class="image-grid" id="grid-asool"></div>
+        </div>
+
+        <!-- Booth Pictures -->
+        <div class="project-section" data-category="events" id="project-booth-pictures">
+            <div class="project-header">
+                <h2>صور البوثات</h2>
+                <span class="image-count">23 صورة</span>
+                <span class="category-tag">فعاليات</span>
+            </div>
+            <div class="image-grid" id="grid-booth-pictures"></div>
+        </div>
+
+        <!-- Sabahat -->
+        <div class="project-section" data-category="events" id="project-sabahat">
+            <div class="project-header">
+                <h2>سباحات</h2>
+                <span class="image-count">7 صور</span>
+                <span class="category-tag">فعاليات</span>
+            </div>
+            <div class="image-grid" id="grid-sabahat"></div>
+        </div>
+
+        <!-- Najez -->
+        <div class="project-section" data-category="events" id="project-najez">
+            <div class="project-header">
+                <h2>ناجز</h2>
+                <span class="image-count">7 صور</span>
+                <span class="category-tag">فعاليات</span>
+            </div>
+            <div class="image-grid" id="grid-najez"></div>
+        </div>
+
+        <!-- Tawal -->
+        <div class="project-section" data-category="events" id="project-tawal">
+            <div class="project-header">
+                <h2>طوال</h2>
+                <span class="image-count">2 صورة</span>
+                <span class="category-tag">فعاليات</span>
+            </div>
+            <div class="image-grid" id="grid-tawal"></div>
+        </div>
+
+    </section>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-content">
+            <button class="lightbox-close">&times;</button>
+            <button class="lightbox-nav lightbox-prev">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 18l-6-6 6-6"/>
+                </svg>
+            </button>
+            <img src="" alt="" id="lightbox-img">
+            <button class="lightbox-nav lightbox-next">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 18l6-6-6-6"/>
+                </svg>
+            </button>
+            <div class="lightbox-info">
+                <span id="lightbox-counter"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <svg viewBox="0 0 50 50" width="50" height="50">
+                            <polygon points="25,2 48,14 48,36 25,48 2,36 2,14" fill="none" stroke="#00FFFF" stroke-width="1.5"/>
+                            <path d="M20,12 L30,12 L25,22 L33,22 L17,40 L22,25 L14,25 Z" fill="#FF00FF"/>
+                        </svg>
+                        <span dir="ltr">VOLTAGE</span>
+                    </div>
+                    <p>نبني لك تجربة... تبقى في الذاكرة.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p><span dir="ltr">© 2025 VOLTAGE.</span> جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Include gallery data -->
+    <script src="js/gallery-data.js"></script>
+    <script>
+
+        // Current lightbox state
+        let currentImages = [];
+        let currentIndex = 0;
+
+        // Initialize gallery
+        function initGallery() {
+            // Load images dynamically from file system paths
+            loadProjectImages();
+
+            // Setup filters
+            setupFilters();
+
+            // Setup lightbox
+            setupLightbox();
+        }
+
+        // Load images for projects that have hardcoded paths
+        function loadProjectImages() {
+            Object.keys(projectImages).forEach(projectId => {
+                const grid = document.getElementById(`grid-${projectId}`);
+                if (!grid) return;
+
+                const images = projectImages[projectId];
+
+                if (images.length === 0) {
+                    // Show placeholder for projects that need dynamic loading
+                    grid.innerHTML = '<p style="color: rgba(255,255,255,0.5); grid-column: 1/-1; text-align: center; padding: 2rem;">جاري تحميل الصور...</p>';
+                    return;
+                }
+
+                images.forEach((src, index) => {
+                    const item = createImageItem(src, index, projectId);
+                    grid.appendChild(item);
+                });
+            });
+        }
+
+        // Create image item element
+        function createImageItem(src, index, projectId) {
+            const item = document.createElement('div');
+            item.className = 'image-item loading';
+            item.dataset.index = index;
+            item.dataset.project = projectId;
+
+            item.innerHTML = `
+                <img src="${src}" alt="صورة المشروع" loading="lazy">
+                <div class="image-overlay">
+                    <div class="zoom-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"/>
+                            <path d="M21 21l-4.35-4.35"/>
+                            <path d="M11 8v6M8 11h6"/>
+                        </svg>
+                    </div>
+                </div>
+            `;
+
+            // Handle image load
+            const img = item.querySelector('img');
+            img.onload = () => item.classList.remove('loading');
+            img.onerror = () => {
+                item.style.display = 'none';
+            };
+
+            // Click to open lightbox
+            item.addEventListener('click', () => {
+                openLightbox(projectId, index);
+            });
+
+            return item;
+        }
+
+        // Setup category filters
+        function setupFilters() {
+            const filterBtns = document.querySelectorAll('.category-btn');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Update active state
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const filter = btn.dataset.filter;
+                    const sections = document.querySelectorAll('.project-section');
+
+                    sections.forEach(section => {
+                        if (filter === 'all') {
+                            section.classList.remove('hidden');
+                        } else {
+                            if (section.dataset.category === filter) {
+                                section.classList.remove('hidden');
+                            } else {
+                                section.classList.add('hidden');
+                            }
+                        }
+                    });
+                });
+            });
+        }
+
+        // Lightbox functionality
+        function setupLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            const closeBtn = lightbox.querySelector('.lightbox-close');
+            const prevBtn = lightbox.querySelector('.lightbox-prev');
+            const nextBtn = lightbox.querySelector('.lightbox-next');
+
+            closeBtn.addEventListener('click', closeLightbox);
+            prevBtn.addEventListener('click', () => navigateLightbox(-1));
+            nextBtn.addEventListener('click', () => navigateLightbox(1));
+
+            // Close on backdrop click
+            lightbox.addEventListener('click', (e) => {
+                if (e.target === lightbox) closeLightbox();
+            });
+
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (!lightbox.classList.contains('active')) return;
+
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowLeft') navigateLightbox(1); // RTL
+                if (e.key === 'ArrowRight') navigateLightbox(-1); // RTL
+            });
+        }
+
+        function openLightbox(projectId, index) {
+            currentImages = projectImages[projectId] || [];
+            currentIndex = index;
+
+            if (currentImages.length === 0) return;
+
+            updateLightboxImage();
+            document.getElementById('lightbox').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function navigateLightbox(direction) {
+            currentIndex += direction;
+            if (currentIndex < 0) currentIndex = currentImages.length - 1;
+            if (currentIndex >= currentImages.length) currentIndex = 0;
+            updateLightboxImage();
+        }
+
+        function updateLightboxImage() {
+            const img = document.getElementById('lightbox-img');
+            const counter = document.getElementById('lightbox-counter');
+
+            img.src = currentImages[currentIndex];
+            counter.textContent = `${currentIndex + 1} / ${currentImages.length}`;
+        }
+
+        // Initialize on DOM ready
+        document.addEventListener('DOMContentLoaded', initGallery);
+    </script>
+</body>
+</html>

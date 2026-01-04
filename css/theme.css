@@ -1,0 +1,37 @@
+/**
+ * VOLTAGE BRIGHT - Ultimate Theme
+ * Premium luxury with rose gold and platinum
+ */
+
+:root {
+  /* Night Mode (Default) */
+  --theme-primary: #E4A0A0;
+  --theme-primary-rgb: 228, 160, 160;
+  --theme-secondary: #E5E4E2;
+  --theme-accent: #F0C8A0;
+  --theme-background: #0D0A0A;
+  --theme-surface: #1A1515;
+  --theme-text: #FFFFFF;
+  --theme-text-muted: #B8A8A8;
+  --theme-glow: rgba(228, 160, 160, 0.5);
+  --theme-gradient: linear-gradient(135deg, #E4A0A0 0%, #E5E4E2 50%, #F0C8A0 100%);
+}
+
+/* Day Mode */
+[data-theme="light"], .day-mode {
+  --theme-primary: #B76E79;
+  --theme-primary-rgb: 183, 110, 121;
+  --theme-secondary: #A0A0A0;
+  --theme-accent: #C9A66B;
+  --theme-background: #FFF5F5;
+  --theme-surface: #FFFFFF;
+  --theme-text: #2D2424;
+  --theme-text-muted: #6B5555;
+  --theme-glow: rgba(183, 110, 121, 0.3);
+  --theme-gradient: linear-gradient(135deg, #B76E79 0%, #A0A0A0 50%, #C9A66B 100%);
+}
+
+.theme-ultimate {
+  --neon-color: var(--theme-primary);
+  --neon-glow: 0 0 10px var(--theme-glow), 0 0 20px var(--theme-glow), 0 0 40px var(--theme-glow);
+}

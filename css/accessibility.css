@@ -1,0 +1,200 @@
+/**
+ * VOLTAGE BRIGHT - Accessibility Styles
+ * WCAG 2.1 AA Compliance Stylesheet
+ */
+
+/* 1. SKIP LINK */
+.skip-to-content {
+    position: fixed;
+    top: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100000;
+    padding: 1rem 2rem;
+    background: #000000;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    border: 3px solid #E8FF00;
+    border-radius: 0;
+    box-shadow: 0 0 20px rgba(232, 255, 0, 0.5), 0 4px 20px rgba(0, 0, 0, 0.8);
+    transition: top 0.3s ease-in-out;
+    white-space: nowrap;
+}
+
+.skip-to-content:focus,
+.skip-to-content:focus-visible {
+    top: 1rem;
+    outline: none;
+}
+
+[dir="rtl"] .skip-to-content {
+    font-family: "Tajawal", "Outfit", sans-serif;
+}
+
+/* 2. FOCUS VISIBLE STYLES */
+*:focus { outline: none; }
+
+*:focus-visible {
+    outline: 3px solid #E8FF00;
+    outline-offset: 3px;
+    box-shadow: 0 0 0 6px rgba(232, 255, 0, 0.25);
+}
+
+a:focus-visible {
+    outline: 3px solid #E8FF00;
+    outline-offset: 2px;
+    box-shadow: 0 0 15px rgba(232, 255, 0, 0.4);
+    border-radius: 2px;
+}
+
+button:focus-visible,
+[role="button"]:focus-visible,
+input[type="button"]:focus-visible,
+input[type="submit"]:focus-visible {
+    outline: 3px solid #E8FF00;
+    outline-offset: 3px;
+    box-shadow: 0 0 0 6px rgba(232, 255, 0, 0.2), 0 0 20px rgba(232, 255, 0, 0.4);
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+    outline: 3px solid #E8FF00;
+    outline-offset: 0;
+    border-color: #E8FF00;
+    box-shadow: 0 0 0 4px rgba(232, 255, 0, 0.2), inset 0 0 10px rgba(232, 255, 0, 0.1);
+}
+
+.nav-links a:focus-visible,
+.navbar a:focus-visible {
+    outline: 2px solid #E8FF00;
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+.service-card:focus-visible,
+.portfolio-item:focus-visible,
+[tabindex="0"]:focus-visible {
+    outline: 3px solid #E8FF00;
+    outline-offset: 4px;
+    box-shadow: 0 0 30px rgba(232, 255, 0, 0.3);
+}
+
+.mobile-menu-btn:focus-visible {
+    outline: 3px solid #E8FF00;
+    outline-offset: 4px;
+}
+
+/* 3. REDUCED MOTION */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    html { scroll-behavior: auto; }
+    .particles-canvas, .neon-tube, .neon-circle, .hero-orb, .neon-line,
+    .scanlines, .noise-overlay, .hero-grid, .grid-bg { animation: none !important; }
+    .animate-on-scroll, [data-aos], .fade-in, .slide-in, .zoom-in {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+    .loader, .loader-bar, .loader-text { animation: none !important; }
+    .cursor, .cursor-dot { display: none !important; }
+}
+
+/* 4. HIGH CONTRAST MODE */
+@media (forced-colors: active) {
+    body { background: Canvas; color: CanvasText; }
+    a, a:visited { color: LinkText; }
+    button, .btn-primary, .btn-secondary, .nav-cta {
+        border: 2px solid ButtonText;
+        background: ButtonFace;
+        color: ButtonText;
+    }
+    input, textarea, select {
+        border: 2px solid CanvasText;
+        background: Canvas;
+        color: CanvasText;
+    }
+    *:focus, *:focus-visible { outline: 3px solid Highlight; outline-offset: 2px; }
+    svg { fill: CanvasText; }
+    .noise-overlay, .scanlines, .particles-canvas, .cursor, .cursor-dot { display: none !important; }
+}
+
+@media (prefers-contrast: more) {
+    body { color: #ffffff; }
+    .service-card, .portfolio-item, .process-step, .contact-form {
+        background: #000000;
+        border: 2px solid #ffffff;
+    }
+    .btn-primary { background: #E8FF00; color: #000000; border: 2px solid #E8FF00; }
+    .btn-secondary { background: transparent; color: #ffffff; border: 2px solid #ffffff; }
+    a { text-decoration: underline; }
+    *:focus-visible { outline-width: 4px; outline-offset: 4px; }
+}
+
+/* 5. SCREEN READER UTILITIES */
+.sr-only, .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.sr-only-focusable:focus, .visually-hidden-focusable:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+}
+
+/* 6. KEYBOARD NAVIGATION */
+body.keyboard-navigation *:focus { outline: 3px solid #E8FF00 !important; }
+body.mouse-navigation *:focus:not(:focus-visible) { outline: none; }
+
+/* 7. INTERACTIVE STATES */
+button:disabled, input:disabled, [aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; }
+[aria-busy="true"] { cursor: wait; }
+[aria-current="page"] { font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
+
+/* 8. MESSAGES */
+.error-message, .form-error, [role="alert"] {
+    color: #ff4444;
+    font-weight: 600;
+    border-left: 4px solid #ff4444;
+    padding-left: 1rem;
+}
+.success-message, [role="status"].success {
+    color: #44ff44;
+    font-weight: 600;
+    border-left: 4px solid #44ff44;
+    padding-left: 1rem;
+}
+
+/* 9. TOUCH TARGETS */
+@media (pointer: coarse) {
+    button, .btn-primary, .btn-secondary, .nav-cta, .mobile-menu-btn { min-height: 44px; min-width: 44px; }
+    .nav-links a, .mobile-menu a { min-height: 44px; display: inline-flex; align-items: center; }
+    input[type="checkbox"], input[type="radio"] { min-width: 24px; min-height: 24px; }
+}
+
+/* 10. PRINT */
+@media print {
+    body { background: #ffffff !important; color: #000000 !important; }
+    a { color: #000000 !important; text-decoration: underline !important; }
+    a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.8em; }
+    .skip-to-content, .mobile-menu-btn, .mobile-menu, .cursor, .cursor-dot,
+    .particles-canvas, .scanlines, .noise-overlay { display: none !important; }
+}
