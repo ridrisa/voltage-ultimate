@@ -419,12 +419,18 @@ console.log('⚡ VOLTAGE Ultimate Loaded - Enhanced Portfolio Edition');
 // ========================================
 
 class UltimateGallery {
-    constructor() {
-        this.gallery = document.getElementById('ultimateGallery');
-        this.loadMoreBtn = document.getElementById('loadMoreBtn');
+    constructor(config = {}) {
+        // Support both old single gallery and new dual gallery setup
+        this.galleryId = config.galleryId || 'ultimateGallery';
+        this.loadMoreBtnId = config.loadMoreBtnId || 'loadMoreBtn';
+        this.remainingCountId = config.remainingCountId || 'remainingCount';
+        this.categoryFilter = config.categoryFilter || 'all'; // 'neon', 'events', or 'all'
+
+        this.gallery = document.getElementById(this.galleryId);
+        this.loadMoreBtn = document.getElementById(this.loadMoreBtnId);
+        this.remainingCount = document.getElementById(this.remainingCountId);
         this.progressBar = document.getElementById('progressBar');
         this.progressText = document.getElementById('progressText');
-        this.remainingCount = document.getElementById('remainingCount');
         this.galleryLoading = document.getElementById('galleryLoading');
         this.searchInput = document.getElementById('gallerySearch');
         this.lightbox = document.getElementById('premiumLightbox');
@@ -432,7 +438,7 @@ class UltimateGallery {
         this.currentFilter = 'all';
         this.currentSubcategory = null;
         this.currentView = 'grid';
-        this.itemsPerPage = 24;
+        this.itemsPerPage = 12;
         this.currentPage = 0;
         this.filteredImages = [];
         this.allImages = [];
@@ -450,6 +456,15 @@ class UltimateGallery {
             this.allImages = [];
             for (const [projectKey, images] of Object.entries(projectImages)) {
                 const meta = projectMeta[projectKey] || { nameAr: projectKey, nameEn: projectKey, category: 'neon' };
+
+                // Filter by category if specified
+                const isNeonCategory = meta.category === 'neon' || meta.category === 'coffee' || meta.category === 'games' || meta.category === 'national';
+                const isEventsCategory = meta.category === 'events';
+
+                // Skip if category filter doesn't match
+                if (this.categoryFilter === 'neon' && !isNeonCategory) continue;
+                if (this.categoryFilter === 'events' && !isEventsCategory) continue;
+
                 images.forEach((src, index) => {
                     this.allImages.push({
                         src: src,
@@ -1143,9 +1158,32 @@ class UltimateGallery {
     }
 }
 
-// Initialize Ultimate Gallery
+// Initialize Ultimate Galleries (Neon + Events)
 document.addEventListener('DOMContentLoaded', () => {
-    new UltimateGallery().init();
+    // Check if we have the new dual gallery setup
+    const neonGallery = document.getElementById('neonGallery');
+    const eventsGallery = document.getElementById('eventsGallery');
+
+    if (neonGallery && eventsGallery) {
+        // New dual gallery setup
+        console.log('Initializing dual galleries: Neon + Events');
+        new UltimateGallery({
+            galleryId: 'neonGallery',
+            loadMoreBtnId: 'loadMoreNeonBtn',
+            remainingCountId: 'remainingNeonCount',
+            categoryFilter: 'neon'
+        }).init();
+
+        new UltimateGallery({
+            galleryId: 'eventsGallery',
+            loadMoreBtnId: 'loadMoreEventsBtn',
+            remainingCountId: 'remainingEventsCount',
+            categoryFilter: 'events'
+        }).init();
+    } else {
+        // Fallback to single gallery
+        new UltimateGallery().init();
+    }
 });
 
-console.log('Gallery System Loaded - 100+ Images Ready');
+console.log('Gallery System Loaded - Dual Gallery Mode Ready');
