@@ -89,11 +89,19 @@ select:focus-visible {
 
 /* 3. REDUCED MOTION */
 @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+    *:not(.marquee-track-images):not(.marquee-track),
+    *::before, *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
+    }
+    /* Keep marquee running even with reduced motion */
+    .marquee-track-images,
+    .marquee-track {
+        animation-duration: 30s !important;
+        animation-iteration-count: infinite !important;
+        animation-play-state: running !important;
     }
     html { scroll-behavior: auto; }
     .particles-canvas, .neon-tube, .neon-circle, .hero-orb, .neon-line,

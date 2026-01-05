@@ -400,7 +400,18 @@ document.addEventListener('DOMContentLoaded', () => {
     new StatsCounter().init();
     new PortfolioFilter().init();
     new CaseStudyModal().init();
+
+    // Initialize infinite marquee
+    initInfiniteMarquee();
 });
+
+// Infinite Marquee - Now pure CSS (two tracks side by side, each scrolls -100%)
+function initInfiniteMarquee() {
+    // No JS needed - CSS handles the infinite loop
+    // Structure: .marquee-container > .marquee-track-images × 2
+    // Each track scrolls left by its own width (-100%), creating seamless loop
+    console.log('Marquee: Pure CSS animation active');
+}
 
 // Add fadeIn animation
 const style = document.createElement('style');
@@ -834,6 +845,26 @@ class UltimateGallery {
         });
     }
 
+    // Group images by project (subcategory)
+    groupImagesByProject() {
+        const projects = {};
+        this.filteredImages.forEach(img => {
+            const projectKey = img.subcategory;
+            if (!projects[projectKey]) {
+                projects[projectKey] = {
+                    key: projectKey,
+                    title: img.title,
+                    titleAr: img.titleAr,
+                    category: img.category,
+                    images: [],
+                    thumbnail: img.src
+                };
+            }
+            projects[projectKey].images.push(img);
+        });
+        return Object.values(projects);
+    }
+
     filterImages() {
         this.filteredImages = this.allImages.filter(img => {
             // Category filter
@@ -867,9 +898,12 @@ class UltimateGallery {
     }
 
     renderGallery(append = false) {
+        // Group images by project
+        const projects = this.groupImagesByProject();
+
         const startIndex = 0;
         const endIndex = (this.currentPage + 1) * this.itemsPerPage;
-        const imagesToShow = this.filteredImages.slice(startIndex, endIndex);
+        const projectsToShow = projects.slice(startIndex, endIndex);
 
         if (!append) {
             this.gallery.innerHTML = '';
@@ -877,27 +911,99 @@ class UltimateGallery {
 
         const startRender = append ? this.currentPage * this.itemsPerPage : 0;
 
-        imagesToShow.slice(startRender).forEach((img, index) => {
-            const item = this.createGalleryItem(img, startRender + index);
+        projectsToShow.slice(startRender).forEach((project, index) => {
+            const item = this.createProjectCard(project, index);
             this.gallery.appendChild(item);
 
             // Stagger animation
             setTimeout(() => {
                 item.classList.add('visible');
-            }, index * 50);
+            }, index * 80);
         });
 
         // Update progress
-        this.updateProgress(imagesToShow.length);
+        this.updateProgress(projectsToShow.length);
 
         // Update load more button
-        if (endIndex >= this.filteredImages.length) {
-            this.loadMoreBtn.classList.add('hidden');
+        if (endIndex >= projects.length) {
+            if (this.loadMoreBtn) this.loadMoreBtn.classList.add('hidden');
         } else {
-            this.loadMoreBtn.classList.remove('hidden');
-            const remaining = this.filteredImages.length - endIndex;
-            this.remainingCount.textContent = `(${remaining})`;
+            if (this.loadMoreBtn) {
+                this.loadMoreBtn.classList.remove('hidden');
+                const remaining = projects.length - endIndex;
+                if (this.remainingCount) this.remainingCount.textContent = `(${remaining})`;
+            }
         }
+    }
+
+    createProjectCard(project, index) {
+        const item = document.createElement('div');
+        item.className = 'gallery-item project-card';
+        item.dataset.index = index;
+        item.dataset.category = project.category;
+        item.dataset.project = project.key;
+
+        // Get folder name for display
+        const folderName = this.getCategoryName(project.category);
+        const imageCount = project.images.length;
+
+        item.innerHTML = `
+            <div class="item-image">
+                <img data-src="${project.thumbnail}" alt="${project.titleAr}" loading="lazy">
+                <div class="image-count">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                        <polyline points="21 15 16 10 5 21"/>
+                    </svg>
+                    <span>${imageCount}</span>
+                </div>
+            </div>
+            <div class="item-overlay">
+                <span class="item-category">${folderName}</span>
+                <h4 class="item-title">${project.titleAr}</h4>
+                <span class="item-folder">${project.title}</span>
+            </div>
+            <div class="view-btn-overlay">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35M11 8v6M8 11h6"/>
+                </svg>
+            </div>
+        `;
+
+        // Click to open lightbox with project images
+        item.addEventListener('click', () => {
+            this.openProjectLightbox(project);
+        });
+
+        // 3D tilt effect
+        item.addEventListener('mousemove', (e) => {
+            const rect = item.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = (y - centerY) / 20;
+            const rotateY = (centerX - x) / 20;
+
+            item.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px) scale(1.02)`;
+        });
+
+        item.addEventListener('mouseleave', () => {
+            item.style.transform = '';
+        });
+
+        return item;
+    }
+
+    openProjectLightbox(project) {
+        // Store project images for lightbox navigation
+        this.currentProjectImages = project.images;
+        this.currentLightboxIndex = 0;
+        this.lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        this.updateLightboxImage();
+        this.renderThumbnails();
     }
 
     createGalleryItem(img, index) {
@@ -1049,15 +1155,22 @@ class UltimateGallery {
         document.body.style.overflow = '';
         this.stopSlideshow();
         this.isZoomed = false;
+        this.currentProjectImages = null; // Clear project images on close
         document.getElementById('lightboxImage')?.classList.remove('zoomed');
     }
 
+    // Get the current images array (project images if viewing a project, otherwise all filtered)
+    getLightboxImages() {
+        return this.currentProjectImages || this.filteredImages;
+    }
+
     navigateLightbox(direction) {
+        const images = this.getLightboxImages();
         this.currentLightboxIndex += direction;
 
         if (this.currentLightboxIndex < 0) {
-            this.currentLightboxIndex = this.filteredImages.length - 1;
-        } else if (this.currentLightboxIndex >= this.filteredImages.length) {
+            this.currentLightboxIndex = images.length - 1;
+        } else if (this.currentLightboxIndex >= images.length) {
             this.currentLightboxIndex = 0;
         }
 
@@ -1065,7 +1178,8 @@ class UltimateGallery {
     }
 
     updateLightboxImage() {
-        const img = this.filteredImages[this.currentLightboxIndex];
+        const images = this.getLightboxImages();
+        const img = images[this.currentLightboxIndex];
         if (!img) return;
 
         const lightboxImg = document.getElementById('lightboxImage');
@@ -1088,7 +1202,7 @@ class UltimateGallery {
 
         if (title) title.textContent = img.titleAr;
         if (category) category.textContent = this.getCategoryName(img.category);
-        if (indexEl) indexEl.textContent = `${this.currentLightboxIndex + 1} / ${this.filteredImages.length}`;
+        if (indexEl) indexEl.textContent = `${this.currentLightboxIndex + 1} / ${images.length}`;
         if (folder) folder.textContent = img.subcategory;
 
         // Update active thumbnail
@@ -1103,13 +1217,15 @@ class UltimateGallery {
 
         container.innerHTML = '';
 
+        const images = this.getLightboxImages();
+
         // Show limited thumbnails around current
         const range = 10;
         const start = Math.max(0, this.currentLightboxIndex - range);
-        const end = Math.min(this.filteredImages.length, this.currentLightboxIndex + range);
+        const end = Math.min(images.length, this.currentLightboxIndex + range);
 
         for (let i = start; i < end; i++) {
-            const img = this.filteredImages[i];
+            const img = images[i];
             const thumb = document.createElement('div');
             thumb.className = `thumb-item${i === this.currentLightboxIndex ? ' active' : ''}`;
             thumb.innerHTML = `<img src="${img.src}" alt="${img.titleAr}">`;

@@ -1,0 +1,698 @@
+/**
+ * VOLTAGE BRIGHT - Admin Panel Styles
+ * Extracted from _v0ltage_ctrl.html for centralized CSS management
+ */
+
+/* ========================================
+   CSS VARIABLES - ADMIN
+   ======================================== */
+:root {
+    --admin-primary: #F6A704;
+    --admin-secondary: #EB7509;
+    --admin-accent: #D8006D;
+    --admin-teal: #01BCB5;
+    --admin-bg-dark: #0a0a0f;
+    --admin-bg-card: #12121a;
+    --admin-text: #ffffff;
+    --admin-text-muted: #888;
+    --admin-border: #2a2a3a;
+    --admin-success: #00c853;
+    --admin-danger: #ff1744;
+}
+
+/* ========================================
+   RESET & BASE
+   ======================================== */
+.admin-panel-page * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.admin-panel-page body {
+    font-family: 'Tajawal', sans-serif;
+    background: var(--admin-bg-dark);
+    color: var(--admin-text);
+    min-height: 100vh;
+}
+
+/* ========================================
+   LOGIN SCREEN
+   ======================================== */
+.login-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--admin-bg-dark) 0%, #1a1a2e 100%);
+}
+
+.login-box {
+    background: var(--admin-bg-card);
+    padding: 3rem;
+    border-radius: 20px;
+    border: 1px solid var(--admin-border);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.login-logo {
+    width: 200px;
+    height: auto;
+    margin-bottom: 1.5rem;
+}
+
+.login-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.5rem;
+    color: var(--admin-primary);
+    margin-bottom: 0.5rem;
+}
+
+.login-subtitle {
+    color: var(--admin-text-muted);
+    margin-bottom: 2rem;
+}
+
+.login-input {
+    width: 100%;
+    padding: 1rem;
+    background: var(--admin-bg-dark);
+    border: 1px solid var(--admin-border);
+    border-radius: 10px;
+    color: var(--admin-text);
+    font-size: 1rem;
+    font-family: inherit;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.login-input:focus {
+    outline: none;
+    border-color: var(--admin-primary);
+}
+
+.login-btn {
+    width: 100%;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, var(--admin-primary), var(--admin-secondary));
+    border: none;
+    border-radius: 10px;
+    color: var(--admin-text);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(246, 167, 4, 0.3);
+}
+
+.login-error {
+    color: var(--admin-danger);
+    margin-top: 1rem;
+    display: none;
+}
+
+/* ========================================
+   ADMIN PANEL LAYOUT
+   ======================================== */
+.admin-panel {
+    display: none;
+}
+
+.admin-header {
+    background: var(--admin-bg-card);
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--admin-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.admin-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-logo img {
+    height: 35px;
+    width: auto;
+}
+
+.admin-logo span {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 600;
+    color: var(--admin-primary);
+}
+
+.admin-nav {
+    display: flex;
+    gap: 1rem;
+}
+
+.admin-nav-btn {
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+    color: var(--admin-text);
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: inherit;
+}
+
+.admin-nav-btn:hover,
+.admin-nav-btn.active {
+    background: var(--admin-primary);
+    border-color: var(--admin-primary);
+}
+
+.logout-btn {
+    background: transparent;
+    border: 1px solid var(--admin-danger);
+    color: var(--admin-danger);
+}
+
+.logout-btn:hover {
+    background: var(--admin-danger);
+    color: white;
+}
+
+.admin-content {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ========================================
+   SECTION HEADERS
+   ======================================== */
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    color: var(--admin-primary);
+}
+
+.btn-add {
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, var(--admin-teal), #00d4aa);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.btn-add:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(1, 188, 181, 0.3);
+}
+
+/* ========================================
+   GALLERY GRID - ADMIN
+   ======================================== */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.gallery-card {
+    background: var(--admin-bg-card);
+    border-radius: 15px;
+    border: 1px solid var(--admin-border);
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.gallery-card:hover {
+    border-color: var(--admin-primary);
+    transform: translateY(-5px);
+}
+
+.gallery-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.gallery-info {
+    padding: 1rem;
+}
+
+.gallery-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.gallery-category {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: var(--admin-primary);
+    border-radius: 15px;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+.gallery-count {
+    color: var(--admin-text-muted);
+    font-size: 0.9rem;
+}
+
+.gallery-actions {
+    display: flex;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-top: 1px solid var(--admin-border);
+}
+
+.btn-edit,
+.btn-delete {
+    flex: 1;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.3s;
+}
+
+.btn-edit {
+    background: var(--admin-primary);
+    color: white;
+}
+
+.btn-delete {
+    background: transparent;
+    border: 1px solid var(--admin-danger);
+    color: var(--admin-danger);
+}
+
+.btn-delete:hover {
+    background: var(--admin-danger);
+    color: white;
+}
+
+/* ========================================
+   MODAL
+   ======================================== */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--admin-bg-card);
+    border-radius: 20px;
+    border: 1px solid var(--admin-border);
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--admin-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    color: var(--admin-primary);
+}
+
+.modal-close {
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+    color: var(--admin-text);
+    cursor: pointer;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    padding: 1.5rem;
+    border-top: 1px solid var(--admin-border);
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+/* ========================================
+   FORM ELEMENTS
+   ======================================== */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--admin-text-muted);
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    width: 100%;
+    padding: 1rem;
+    background: var(--admin-bg-dark);
+    border: 1px solid var(--admin-border);
+    border-radius: 10px;
+    color: var(--admin-text);
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--admin-primary);
+}
+
+.form-textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+/* ========================================
+   IMAGE PREVIEW
+   ======================================== */
+.image-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.preview-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid var(--admin-border);
+}
+
+.preview-img:hover {
+    border-color: var(--admin-primary);
+}
+
+/* ========================================
+   BUTTONS
+   ======================================== */
+.btn-save {
+    padding: 0.75rem 2rem;
+    background: linear-gradient(135deg, var(--admin-primary), var(--admin-secondary));
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.btn-cancel {
+    padding: 0.75rem 2rem;
+    background: transparent;
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+    color: var(--admin-text);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+/* ========================================
+   EXPORT SECTION
+   ======================================== */
+.export-section {
+    background: var(--admin-bg-card);
+    border-radius: 15px;
+    border: 1px solid var(--admin-border);
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.export-title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: var(--admin-primary);
+}
+
+.export-info {
+    color: var(--admin-text-muted);
+    margin-bottom: 1.5rem;
+}
+
+.export-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-export {
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, var(--admin-accent), #ff1493);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+}
+
+.btn-export:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(216, 0, 109, 0.3);
+}
+
+/* ========================================
+   STATS BAR
+   ======================================== */
+.stats-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--admin-bg-card);
+    padding: 1.5rem;
+    border-radius: 15px;
+    border: 1px solid var(--admin-border);
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--admin-primary);
+    font-family: 'Orbitron', sans-serif;
+}
+
+.stat-label {
+    color: var(--admin-text-muted);
+    margin-top: 0.5rem;
+}
+
+/* ========================================
+   TOAST NOTIFICATION
+   ======================================== */
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--admin-success);
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    color: white;
+    font-weight: 500;
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 2000;
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.toast.error {
+    background: var(--admin-danger);
+}
+
+/* ========================================
+   CONTENT CARDS
+   ======================================== */
+.content-card {
+    background: var(--admin-bg-card);
+    border-radius: 15px;
+    border: 1px solid var(--admin-border);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.content-card-title {
+    font-size: 1.1rem;
+    color: var(--admin-primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--admin-border);
+}
+
+/* ========================================
+   ADMIN SECTIONS
+   ======================================== */
+.admin-section {
+    display: none;
+}
+
+.admin-section.active {
+    display: block;
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+.admin-hidden-notice {
+    display: none;
+}
+
+/* Button Variants */
+.btn-save-content {
+    background: linear-gradient(135deg, var(--admin-primary), var(--admin-secondary));
+}
+
+.btn-github {
+    background: linear-gradient(135deg, #24292e, #586069);
+}
+
+.btn-export-content {
+    background: linear-gradient(135deg, #9c27b0, #e91e63);
+}
+
+.btn-preview {
+    background: linear-gradient(135deg, var(--admin-teal), #00d4aa);
+}
+
+/* Info Text */
+.admin-info-text {
+    color: var(--admin-text-muted);
+    margin-bottom: 1rem;
+}
+
+.admin-info-text a {
+    color: var(--admin-teal);
+}
+
+.admin-info-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.admin-info-small {
+    color: var(--admin-text-muted);
+    margin-top: 1rem;
+    font-size: 0.85rem;
+}
+
+/* Status Indicators */
+.status-connected {
+    color: var(--admin-success);
+}
+
+.status-disconnected {
+    color: var(--admin-text-muted);
+}
+
+.github-status {
+    font-weight: 600;
+}
+
+/* ========================================
+   RESPONSIVE - ADMIN
+   ======================================== */
+@media (max-width: 768px) {
+    .admin-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .admin-nav {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .section-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .gallery-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}

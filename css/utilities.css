@@ -1,0 +1,354 @@
+/**
+ * VOLTAGE BRIGHT - Utility Classes
+ * Common inline styles extracted and centralized
+ */
+
+/* ========================================
+   DISPLAY UTILITIES
+   ======================================== */
+.d-flex {
+    display: flex;
+}
+
+.d-inline-flex {
+    display: inline-flex;
+}
+
+.d-block {
+    display: block;
+}
+
+.d-inline-block {
+    display: inline-block;
+}
+
+.d-none {
+    display: none;
+}
+
+/* ========================================
+   FLEXBOX UTILITIES
+   ======================================== */
+.align-items-center {
+    align-items: center;
+}
+
+.align-items-start {
+    align-items: flex-start;
+}
+
+.align-items-end {
+    align-items: flex-end;
+}
+
+.justify-content-center {
+    justify-content: center;
+}
+
+.justify-content-between {
+    justify-content: space-between;
+}
+
+.justify-content-end {
+    justify-content: flex-end;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.gap-1 { gap: 0.25rem; }
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 1rem; }
+.gap-4 { gap: 1.5rem; }
+.gap-5 { gap: 2rem; }
+
+/* ========================================
+   SIZING UTILITIES
+   ======================================== */
+.w-100 {
+    width: 100%;
+}
+
+.w-auto {
+    width: auto;
+}
+
+.h-auto {
+    height: auto;
+}
+
+/* Common logo sizes */
+.logo-height-sm {
+    height: 35px;
+    width: auto;
+}
+
+.logo-height-md {
+    height: 45px;
+    width: auto;
+}
+
+.logo-height-lg {
+    height: 55px;
+    width: auto;
+}
+
+.logo-height-xl {
+    height: 80px;
+    width: auto;
+}
+
+/* Navbar logo specific */
+.navbar-logo-img {
+    height: 55px;
+    width: auto;
+}
+
+/* Admin logo specific */
+.admin-logo-img {
+    height: 35px;
+    width: auto;
+}
+
+/* Login logo specific */
+.login-logo-img {
+    width: 200px;
+    height: auto;
+}
+
+/* ========================================
+   TEXT UTILITIES
+   ======================================== */
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-left {
+    text-align: left;
+}
+
+/* ========================================
+   SPACING UTILITIES
+   ======================================== */
+/* Margin */
+.m-0 { margin: 0; }
+.m-1 { margin: 0.25rem; }
+.m-2 { margin: 0.5rem; }
+.m-3 { margin: 1rem; }
+.m-4 { margin: 1.5rem; }
+.m-5 { margin: 2rem; }
+
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 1rem; }
+.mt-4 { margin-top: 1.5rem; }
+.mt-5 { margin-top: 2rem; }
+
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 1rem; }
+.mb-4 { margin-bottom: 1.5rem; }
+.mb-5 { margin-bottom: 2rem; }
+
+.mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Padding */
+.p-0 { padding: 0; }
+.p-1 { padding: 0.25rem; }
+.p-2 { padding: 0.5rem; }
+.p-3 { padding: 1rem; }
+.p-4 { padding: 1.5rem; }
+.p-5 { padding: 2rem; }
+
+/* ========================================
+   COLOR UTILITIES
+   ======================================== */
+.text-muted {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.text-white {
+    color: #ffffff;
+}
+
+.text-primary {
+    color: var(--neon-cyan, #00FFFF);
+}
+
+.text-accent {
+    color: var(--neon-magenta, #FF00FF);
+}
+
+.text-teal {
+    color: var(--admin-teal, #01BCB5);
+}
+
+.text-success {
+    color: var(--admin-success, #00c853);
+}
+
+.text-admin-muted {
+    color: var(--admin-text-muted, #888);
+}
+
+/* Font weights */
+.font-weight-semibold {
+    font-weight: 600;
+}
+
+.font-weight-bold {
+    font-weight: 700;
+}
+
+/* Font sizes */
+.font-size-lg {
+    font-size: 1.1rem;
+}
+
+.font-size-sm {
+    font-size: 0.85rem;
+}
+
+.font-size-xs {
+    font-size: 0.75rem;
+}
+
+/* ========================================
+   SVG GRADIENT STOP COLORS
+   ======================================== */
+/* These are for inline SVG gradient definitions */
+.gradient-stop-cyan {
+    stop-color: #00FFFF;
+}
+
+.gradient-stop-magenta {
+    stop-color: #FF00FF;
+}
+
+.gradient-stop-gold {
+    stop-color: #FFD700;
+}
+
+/* ========================================
+   BACKGROUND UTILITIES
+   ======================================== */
+.bg-transparent {
+    background: transparent;
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, var(--admin-primary, #F6A704), var(--admin-secondary, #EB7509));
+}
+
+.bg-gradient-github {
+    background: linear-gradient(135deg, #24292e, #586069);
+}
+
+.bg-gradient-purple {
+    background: linear-gradient(135deg, #9c27b0, #e91e63);
+}
+
+.bg-gradient-teal {
+    background: linear-gradient(135deg, var(--admin-teal, #01BCB5), #00d4aa);
+}
+
+/* ========================================
+   POSITION UTILITIES
+   ======================================== */
+.position-relative {
+    position: relative;
+}
+
+.position-absolute {
+    position: absolute;
+}
+
+.position-fixed {
+    position: fixed;
+}
+
+/* ========================================
+   BORDER UTILITIES
+   ======================================== */
+.border-0 {
+    border: none;
+}
+
+.rounded {
+    border-radius: 8px;
+}
+
+.rounded-lg {
+    border-radius: 15px;
+}
+
+.rounded-full {
+    border-radius: 50%;
+}
+
+/* ========================================
+   VISIBILITY UTILITIES
+   ======================================== */
+.visible {
+    visibility: visible;
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+.opacity-0 {
+    opacity: 0;
+}
+
+.opacity-50 {
+    opacity: 0.5;
+}
+
+.opacity-100 {
+    opacity: 1;
+}
+
+/* ========================================
+   CURSOR UTILITIES
+   ======================================== */
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.cursor-default {
+    cursor: default;
+}
+
+/* ========================================
+   TRANSITION UTILITIES
+   ======================================== */
+.transition-all {
+    transition: all 0.3s ease;
+}
+
+.transition-fast {
+    transition: all 0.15s ease;
+}
+
+.transition-slow {
+    transition: all 0.5s ease;
+}
