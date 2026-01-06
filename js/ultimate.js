@@ -482,6 +482,17 @@ class UltimateGallery {
         this.buildImageDatabase();
     }
 
+    // Priority map for neon projects - lower number = shown first
+    getProjectPriority(subcategory) {
+        const priorityMap = {
+            'case-closed': 1,
+            'caseclosed': 1,
+            'aramex': 2,
+            'snapchat': 3
+        };
+        return priorityMap[subcategory?.toLowerCase()] || 999;
+    }
+
     buildImageDatabase() {
         // Use gallery-data.js if available, otherwise use fallback
         if (typeof projectImages !== 'undefined' && typeof projectMeta !== 'undefined') {
@@ -497,6 +508,9 @@ class UltimateGallery {
                 if (this.categoryFilter === 'neon' && !isNeonCategory) continue;
                 if (this.categoryFilter === 'events' && !isEventsCategory) continue;
 
+                // Get priority for this project
+                const priority = this.getProjectPriority(projectKey);
+
                 images.forEach((src, index) => {
                     this.allImages.push({
                         src: src,
@@ -504,7 +518,8 @@ class UltimateGallery {
                         subcategory: projectKey,
                         title: meta.nameEn,
                         titleAr: meta.nameAr,
-                        featured: index === 0 // First image of each project is featured
+                        featured: index === 0, // First image of each project is featured
+                        priority: priority
                     });
                 });
             }
