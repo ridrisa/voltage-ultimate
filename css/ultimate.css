@@ -167,65 +167,30 @@ body {
 }
 
 .voltage-logo-loader {
-    width: 120px;
-    height: 120px;
+    width: 200px;
     margin: 0 auto 30px;
 }
 
-.logo-svg {
+.preloader-logo {
     width: 100%;
-    height: 100%;
-}
-
-.hex-outline {
-    stroke-dasharray: 400;
-    stroke-dashoffset: 400;
-    animation: drawHex 2s ease forwards;
-}
-
-.bolt {
+    height: auto;
     opacity: 0;
-    animation: boltAppear 0.5s ease 1.5s forwards;
+    animation: logoFadeIn 1s ease 0.3s forwards, logoPulse 2s ease-in-out 1.3s infinite;
 }
 
-@keyframes drawHex {
-    to { stroke-dashoffset: 0; }
-}
-
-@keyframes boltAppear {
+@keyframes logoFadeIn {
     to { opacity: 1; }
 }
 
-.loader-text {
-    display: flex;
-    flex-direction: row;
-    direction: ltr;
-    gap: 5px;
-    justify-content: center;
-    margin-bottom: 30px;
-    unicode-bidi: bidi-override;
-}
-
-.loader-text span {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--neon-cyan);
-    text-shadow: var(--glow-cyan);
-    opacity: 0;
-    animation: letterFade 0.3s ease forwards;
-}
-
-.loader-text span:nth-child(1) { animation-delay: 0.5s; }
-.loader-text span:nth-child(2) { animation-delay: 0.6s; }
-.loader-text span:nth-child(3) { animation-delay: 0.7s; }
-.loader-text span:nth-child(4) { animation-delay: 0.8s; }
-.loader-text span:nth-child(5) { animation-delay: 0.9s; }
-.loader-text span:nth-child(6) { animation-delay: 1s; }
-.loader-text span:nth-child(7) { animation-delay: 1.1s; }
-
-@keyframes letterFade {
-    to { opacity: 1; }
+@keyframes logoPulse {
+    0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.5));
+    }
+    50% {
+        transform: scale(1.05);
+        filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.8));
+    }
 }
 
 .loader-bar {
