@@ -193,6 +193,25 @@ body {
     }
 }
 
+/* Preloader responsive */
+@media (max-width: 768px) {
+    .voltage-logo-loader {
+        width: 150px;
+    }
+    .loader-bar {
+        width: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .voltage-logo-loader {
+        width: 120px;
+    }
+    .loader-bar {
+        width: 120px;
+    }
+}
+
 .loader-bar {
     width: 200px;
     height: 3px;
