@@ -593,8 +593,8 @@ class UltimateGallery {
             { src: 'images/projects/neon/boulevard/WhatsApp Image 2023-11-19 at 7.53.37 PM (1).jpeg', category: 'neon', subcategory: 'boulevard', title: 'بوليفارد الرياض', titleAr: 'بوليفارد الرياض' },
             { src: 'images/projects/neon/boulevard/WhatsApp Image 2023-11-19 at 7.53.37 PM (2).jpeg', category: 'neon', subcategory: 'boulevard', title: 'بوليفارد الرياض', titleAr: 'بوليفارد الرياض' },
 
-            // NEON - ARAMEX (14 images)
-            { src: 'images/projects/neon/aramex/1.1.png', category: 'neon', subcategory: 'aramex', title: 'أرامكس', titleAr: 'مقر أرامكس الرئيسي', featured: true },
+            // NEON - ARAMEX (14 images) - PRIORITY 3
+            { src: 'images/projects/neon/aramex/1.1.png', category: 'neon', subcategory: 'aramex', title: 'أرامكس', titleAr: 'مقر أرامكس الرئيسي', featured: true, priority: 3 },
             { src: 'images/projects/neon/aramex/1.2.png', category: 'neon', subcategory: 'aramex', title: 'أرامكس', titleAr: 'مقر أرامكس الرئيسي' },
             { src: 'images/projects/neon/aramex/1.3.png', category: 'neon', subcategory: 'aramex', title: 'أرامكس', titleAr: 'مقر أرامكس الرئيسي' },
             { src: 'images/projects/neon/aramex/1.4.png', category: 'neon', subcategory: 'aramex', title: 'أرامكس', titleAr: 'مقر أرامكس الرئيسي' },
@@ -641,8 +641,8 @@ class UltimateGallery {
             { src: 'images/projects/neon/games/download (7).jpeg', category: 'games', subcategory: 'games', title: 'نيون ألعاب', titleAr: 'نيون ألعاب' },
             { src: 'images/projects/neon/games/download (8).jpeg', category: 'games', subcategory: 'games', title: 'نيون ألعاب', titleAr: 'نيون ألعاب' },
 
-            // NEON - SNAPCHAT (11 images)
-            { src: 'images/projects/neon/snapchat/5922293163252976664.jpg', category: 'neon', subcategory: 'snapchat', title: 'سناب شات', titleAr: 'مقر سناب شات', featured: true },
+            // NEON - SNAPCHAT (11 images) - PRIORITY 2
+            { src: 'images/projects/neon/snapchat/5922293163252976664.jpg', category: 'neon', subcategory: 'snapchat', title: 'سناب شات', titleAr: 'مقر سناب شات', featured: true, priority: 2 },
             { src: 'images/projects/neon/snapchat/5922293163252976666.jpg', category: 'neon', subcategory: 'snapchat', title: 'سناب شات', titleAr: 'مقر سناب شات' },
             { src: 'images/projects/neon/snapchat/5922293163252976667.jpg', category: 'neon', subcategory: 'snapchat', title: 'سناب شات', titleAr: 'مقر سناب شات' },
             { src: 'images/projects/neon/snapchat/5895411916426298955.jpg', category: 'neon', subcategory: 'snapchat', title: 'سناب شات', titleAr: 'مقر سناب شات' },
@@ -708,8 +708,8 @@ class UltimateGallery {
             { src: 'images/projects/neon/shawarma/5863817406852484095.jpg', category: 'neon', subcategory: 'shawarma', title: 'شاورما ناهس', titleAr: 'شاورما ناهس' },
             { src: 'images/projects/neon/shawarma/5902344487563282516.jpg', category: 'neon', subcategory: 'shawarma', title: 'شاورما ناهس', titleAr: 'شاورما ناهس' },
 
-            // NEON - CASE CLOSED (8 images)
-            { src: 'images/projects/neon/case-closed/2.1.png', category: 'neon', subcategory: 'case-closed', title: 'Case Closed', titleAr: 'كيس كلوزد', featured: true },
+            // NEON - CASE CLOSED (8 images) - PRIORITY 1
+            { src: 'images/projects/neon/case-closed/2.1.png', category: 'neon', subcategory: 'case-closed', title: 'Case Closed', titleAr: 'كيس كلوزد', featured: true, priority: 1 },
             { src: 'images/projects/neon/case-closed/2.2.png', category: 'neon', subcategory: 'case-closed', title: 'Case Closed', titleAr: 'كيس كلوزد' },
             { src: 'images/projects/neon/case-closed/2.3.png', category: 'neon', subcategory: 'case-closed', title: 'Case Closed', titleAr: 'كيس كلوزد' },
             { src: 'images/projects/neon/case-closed/2.4.png', category: 'neon', subcategory: 'case-closed', title: 'Case Closed', titleAr: 'كيس كلوزد' },
@@ -761,8 +761,15 @@ class UltimateGallery {
         // Shuffle for variety
         this.shuffleArray(this.allImages);
 
-        // Put featured items first
-        this.allImages.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+        // Sort by priority first (1,2,3), then by featured
+        this.allImages.sort((a, b) => {
+            // Priority items first (lower number = higher priority)
+            if (a.priority && !b.priority) return -1;
+            if (!a.priority && b.priority) return 1;
+            if (a.priority && b.priority) return a.priority - b.priority;
+            // Then featured items
+            return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
+        });
 
         this.filteredImages = [...this.allImages];
     }
