@@ -2279,6 +2279,20 @@ section {
         grid-template-columns: repeat(2, 1fr);
     }
 
+    .hero {
+        padding-top: 120px;
+        min-height: auto;
+    }
+
+    .hero-content {
+        padding-top: 40px;
+    }
+
+    .hero-title {
+        font-size: clamp(2rem, 8vw, 3rem);
+        margin-bottom: 20px;
+    }
+
     .hero-stats {
         flex-direction: column;
         gap: 20px;
