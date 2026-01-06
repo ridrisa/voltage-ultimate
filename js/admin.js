@@ -501,3 +501,28 @@ if (publishBtn) {
 
 // Load GitHub settings on page load
 loadGitHubSettings();
+
+// Social Media Links Handler
+const saveSocialLinksBtn = document.getElementById('saveSocialLinks');
+if (saveSocialLinksBtn) {
+    // Load existing social links
+    const socialLinks = JSON.parse(localStorage.getItem('voltage_social_links') || '{}');
+    if (socialLinks.instagram) document.getElementById('socialInstagram').value = socialLinks.instagram;
+    if (socialLinks.twitter) document.getElementById('socialTwitter').value = socialLinks.twitter;
+    if (socialLinks.linkedin) document.getElementById('socialLinkedIn').value = socialLinks.linkedin;
+    if (socialLinks.tiktok) document.getElementById('socialTikTok').value = socialLinks.tiktok;
+    if (socialLinks.snapchat) document.getElementById('socialSnapchat').value = socialLinks.snapchat;
+
+    saveSocialLinksBtn.addEventListener('click', () => {
+        const links = {
+            instagram: document.getElementById('socialInstagram').value.trim(),
+            twitter: document.getElementById('socialTwitter').value.trim(),
+            linkedin: document.getElementById('socialLinkedIn').value.trim(),
+            tiktok: document.getElementById('socialTikTok').value.trim(),
+            snapchat: document.getElementById('socialSnapchat').value.trim()
+        };
+
+        localStorage.setItem('voltage_social_links', JSON.stringify(links));
+        showToast('تم حفظ روابط التواصل الاجتماعي');
+    });
+}
