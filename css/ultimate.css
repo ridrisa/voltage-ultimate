@@ -683,13 +683,13 @@ body {
 }
 
 .btn-primary {
-    background: var(--gradient-neon);
+    background: #06bcb5;
     color: var(--bg-primary);
 }
 
 .btn-primary:hover {
     transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba(0, 255, 255, 0.4);
+    box-shadow: 0 10px 30px rgba(6, 188, 181, 0.4);
 }
 
 .btn-secondary {
@@ -719,10 +719,7 @@ body {
     font-family: 'Orbitron', sans-serif;
     font-size: 3rem;
     font-weight: 700;
-    background: var(--gradient-neon);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #06bcb5;
 }
 
 .stat-label {
